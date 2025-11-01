@@ -11,3 +11,38 @@ export const isTestEnvironment = Boolean(
 export const guestRegex = /^guest-\d+$/;
 
 export const DUMMY_PASSWORD = generateDummyPassword();
+
+// Languages from prompts.ts - extracted from the CSV header
+export const SUPPORTED_LANGUAGES = [
+  "auto",
+  "indonesian",
+  "acehnese",
+  "banjarese",
+  "english",
+  "madurese",
+  "ngaju",
+  "sundanese",
+  "balinese",
+  "buginese",
+  "javanese",
+  "minangkabau",
+  "toba_batak",
+] as const;
+
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
+
+export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
+  auto: "Auto",
+  indonesian: "Indonesian",
+  acehnese: "Acehnese",
+  banjarese: "Banjarese",
+  english: "English",
+  madurese: "Madurese",
+  ngaju: "Ngaju",
+  sundanese: "Sundanese",
+  balinese: "Balinese",
+  buginese: "Buginese",
+  javanese: "Javanese",
+  minangkabau: "Minangkabau",
+  toba_batak: "Toba Batak",
+};

@@ -25,7 +25,7 @@ import { myProvider } from "@/lib/ai/providers";
 import type { Attachment, ChatMessage } from "@/lib/types";
 import type { AppUsage } from "@/lib/usage";
 import { cn } from "@/lib/utils";
-import { Context } from "./elements/context";
+import { LANGUAGE_LABELS, SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/lib/constants";
 import {
   PromptInput,
   PromptInputModelSelect,
@@ -48,6 +48,7 @@ import { PreviewAttachment } from "./preview-attachment";
 import { SuggestedActions } from "./suggested-actions";
 import { Button } from "./ui/button";
 import type { VisibilityType } from "./visibility-selector";
+import { LanguageSelector } from "./language-selector";
 
 function PureMultimodalInput({
   chatId,
@@ -111,6 +112,13 @@ function PureMultimodalInput({
   // Initialize with false to prevent hydration mismatch, sync with localStorage after mount
   const [webSearchEnabled, setWebSearchEnabled] = useState(false);
   const [newsSearchEnabled, setNewsSearchEnabled] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<SupportedLanguage>(() => {
+    if (typeof window === "undefined") return "auto";
+    const stored = localStorage.getItem("selectedLanguage");
+    return (stored && SUPPORTED_LANGUAGES.includes(stored as SupportedLanguage))
+      ? (stored as SupportedLanguage)
+      : "auto";
+  });
 
   // Sync with localStorage after component mounts (client-side only)
   useEffect(() => {
@@ -132,6 +140,10 @@ function PureMultimodalInput({
   useEffect(() => {
     localStorage.setItem("newsSearchEnabled", String(newsSearchEnabled));
   }, [newsSearchEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem("selectedLanguage", selectedLanguage);
+  }, [selectedLanguage]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -178,6 +190,7 @@ function PureMultimodalInput({
       data: {
         webSearchEnabled,
         newsSearchEnabled,
+        language: selectedLanguage,
       },
     });
 
@@ -234,12 +247,6 @@ function PureMultimodalInput({
     return myProvider.languageModel(selectedModelId);
   }, [selectedModelId]);
 
-  const contextProps = useMemo(
-    () => ({
-      usage,
-    }),
-    [usage]
-  );
 
   const handleFileChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
@@ -345,8 +352,7 @@ function PureMultimodalInput({
             ref={textareaRef}
             rows={1}
             value={input}
-          />{" "}
-          <Context {...contextProps} />
+          />
         </div>
         <PromptInputToolbar className="!border-top-0 border-t-0! p-0 shadow-none dark:border-0 dark:border-transparent!">
           <PromptInputTools className="gap-0 sm:gap-0.5">
@@ -366,6 +372,11 @@ function PureMultimodalInput({
               icon={BookIcon}
               label="News"
               onClick={() => setNewsSearchEnabled(!newsSearchEnabled)}
+              status={status}
+            />
+            <LanguageSelector
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={setSelectedLanguage}
               status={status}
             />
             <ModelSelectorCompact
