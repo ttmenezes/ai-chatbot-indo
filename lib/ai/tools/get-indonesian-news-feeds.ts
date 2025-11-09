@@ -15,67 +15,67 @@ export const FEEDS: FeedDef[] = [
   {
     id: "kompas",
     name: "Kompas",
-    url: "https://rss.kompas.com/",
+    url: "https://news.google.com/rss/search?q=site%3Akompas.com&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
     id: "detik",
     name: "detikcom",
-    url: "https://rss.detik.com/",
+    url: "https://news.google.com/rss/search?q=site%3Adetik.com&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
     id: "antara-en",
     name: "ANTARA (EN)",
-    url: "https://en.antaranews.com/rss",
+    url: "https://en.antaranews.com/rss/latest-news.xml",
     reliability: "green",
   },
   {
     id: "okezone",
     name: "Okezone",
-    url: "https://sindikasi.okezone.com/",
+    url: "https://news.google.com/rss/search?q=site%3Aokezone.com&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
     id: "tribunnews",
     name: "Tribunnews",
-    url: "https://www.tribunnews.com/rss",
+    url: "https://news.google.com/rss/search?q=site%3Atribunnews.com&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
     id: "sindonews",
     name: "SINDOnews",
-    url: "https://www.sindonews.com/feed",
+    url: "https://news.google.com/rss/search?q=site%3Asindonews.com&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
     id: "indoleft",
     name: "Indoleft",
-    url: "https://www.indoleft.org/rss.php",
+    url: "https://news.google.com/rss/search?q=site%3Aindoleft.org&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
     id: "balitimes",
     name: "The Bali Times",
-    url: "https://thebalitimes.com/feed",
+    url: "https://news.google.com/rss/search?q=site%3Athebalitimes.com&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
     id: "online24jam",
     name: "Online24jam",
-    url: "https://online24jam.com/feed",
+    url: "https://news.google.com/rss/search?q=site%3Aonline24jam.com&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
     id: "fajar",
     name: "Fajar",
-    url: "https://fajar.co.id/feed",
+    url: "https://news.google.com/rss/search?q=site%3Afajar.co.id&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
     id: "waspada",
     name: "Waspada",
-    url: "https://waspada.co.id/feed",
+    url: "https://news.google.com/rss/search?q=site%3Awaspada.co.id&hl=id&gl=ID&ceid=ID:id",
     reliability: "green",
   },
   {
@@ -93,31 +93,31 @@ export const FEEDS: FeedDef[] = [
   {
     id: "tempo",
     name: "Tempo",
-    url: "https://rss.tempo.co/",
+    url: "https://news.google.com/rss/search?q=site%3Atempo.co&hl=id&gl=ID&ceid=ID:id",
     reliability: "yellow",
   },
   {
     id: "beritasatu",
     name: "BeritaSatu",
-    url: "https://www.beritasatu.com/rss",
+    url: "https://news.google.com/rss/search?q=site%3Aberitasatu.com&hl=id&gl=ID&ceid=ID:id",
     reliability: "yellow",
   },
   {
     id: "mediaindo",
     name: "Media Indonesia",
-    url: "https://mediaindonesia.com/feed",
+    url: "https://news.google.com/rss/search?q=site%3Amediaindonesia.com&hl=id&gl=ID&ceid=ID:id",
     reliability: "yellow",
   },
   {
     id: "idnewsnet",
     name: "IndonesiaNews.Net",
-    url: "https://www.indonesianews.net/rss",
+    url: "https://news.google.com/rss/search?q=site%3Aindonesianews.net&hl=id&gl=ID&ceid=ID:id",
     reliability: "yellow",
   },
   {
     id: "viva",
     name: "VIVA",
-    url: "https://www.viva.co.id/get/all",
+    url: "https://news.google.com/rss/search?q=site%3Aviva.co.id&hl=id&gl=ID&ceid=ID:id",
     reliability: "yellow",
   },
 ];
@@ -134,6 +134,7 @@ const FETCH_TIMEOUT_MS = 8000;
 const DEFAULT_INSTRUCTIONS =
   "Summarize key developments from the fetched Indonesian headlines. Cite feed sources by name and URL. If important topics are missing, fall back to google_search + url_context.";
 const FEED_URL_SUFFIX_PATTERN = /\/(feed|rss)$/i;
+const GOOGLE_NEWS_HOST = "news.google.com";
 
 type FeedArticle = {
   title?: string;
@@ -253,16 +254,82 @@ const looksLikeFeedUrl = (url: string, feed: FeedDef): boolean => {
   return FEED_URL_SUFFIX_PATTERN.test(normalized);
 };
 
-const resolveArticleLink = (
+const isGoogleNewsLink = (url: string): boolean => {
+  try {
+    return new URL(url).hostname === GOOGLE_NEWS_HOST;
+  } catch {
+    return false;
+  }
+};
+
+const resolveGoogleNewsLink = async (
+  url: string
+): Promise<string | undefined> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, Math.min(FETCH_TIMEOUT_MS, 5000));
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      redirect: "follow",
+      headers: {
+        "User-Agent": "UltraciteNewsBot/1.0 (+https://cursor.sh)",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      },
+    });
+
+    if (response.body) {
+      try {
+        await response.body.cancel();
+      } catch {
+        // Ignore cancellation rejections.
+      }
+    }
+
+    if (
+      response.url &&
+      !response.url.startsWith(`https://${GOOGLE_NEWS_HOST}`)
+    ) {
+      return response.url;
+    }
+
+    const location = response.headers.get("location");
+    if (location) {
+      const resolved = new URL(location, url).toString();
+      if (!resolved.startsWith(`https://${GOOGLE_NEWS_HOST}`)) {
+        return resolved;
+      }
+      return resolved;
+    }
+  } catch (error) {
+    if ((error as { name?: string }).name !== "AbortError") {
+      console.warn(
+        "[getIndonesianNewsFeeds] Unable to resolve Google News link",
+        { url, error }
+      );
+    }
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
+  return;
+};
+
+const resolveArticleLink = async (
   feed: FeedDef,
   entryRecord: Record<string, unknown>
-): string | undefined => {
+): Promise<string | undefined> => {
   const candidates = [
     getText(entryRecord.link),
     getText(entryRecord.guid),
     getText(entryRecord.id),
     getText((entryRecord.source as Record<string, unknown> | undefined)?.url),
   ];
+
+  let googleCandidate: string | undefined;
 
   for (const candidate of candidates) {
     if (!candidate) {
@@ -279,17 +346,26 @@ const resolveArticleLink = (
       continue;
     }
 
+    if (isGoogleNewsLink(trimmed)) {
+      const resolved = await resolveGoogleNewsLink(trimmed);
+      if (resolved && !looksLikeFeedUrl(resolved, feed)) {
+        return resolved;
+      }
+      googleCandidate = trimmed;
+      continue;
+    }
+
     return trimmed;
   }
 
-  return;
+  return googleCandidate;
 };
 
-const normalizeArticles = (
+const normalizeArticles = async (
   xml: string,
   itemsPerFeed: number,
   feed: FeedDef
-): FeedArticle[] => {
+): Promise<FeedArticle[]> => {
   const parsed = parser.parse(xml) as Record<string, unknown>;
 
   const rssChannel =
@@ -321,7 +397,7 @@ const normalizeArticles = (
 
     const entryRecord = entry as Record<string, unknown>;
     const title = getText(entryRecord.title);
-    const link = resolveArticleLink(feed, entryRecord);
+    const link = await resolveArticleLink(feed, entryRecord);
     const description =
       getText(entryRecord.description) ??
       getText(entryRecord.summary) ??
@@ -375,7 +451,7 @@ const fetchWithTimeout = async (
     }
 
     const xml = await response.text();
-    const articles = normalizeArticles(xml, itemsPerFeed, feed);
+    const articles = await normalizeArticles(xml, itemsPerFeed, feed);
 
     return {
       feed,
