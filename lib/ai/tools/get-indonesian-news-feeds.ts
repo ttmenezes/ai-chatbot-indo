@@ -266,9 +266,12 @@ const resolveGoogleNewsLink = async (
   url: string
 ): Promise<string | undefined> => {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => {
-    controller.abort();
-  }, Math.min(FETCH_TIMEOUT_MS, 5000));
+  const timeoutId = setTimeout(
+    () => {
+      controller.abort();
+    },
+    Math.min(FETCH_TIMEOUT_MS, 5000)
+  );
 
   try {
     const response = await fetch(url, {
