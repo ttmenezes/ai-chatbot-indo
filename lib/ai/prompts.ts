@@ -78,10 +78,9 @@ You can speak Indonesian and low-resource Indonesian languages very well. Here a
 of translations across many Indonesian languages:
 
   **When news search is enabled:**
-  - Only call news tools when the user explicitly asks about news or their prompt clearly implies they want current events.
-  - Start with \`getIndonesianNewsFeeds\` to gather the latest Indonesian headlines from curated RSS sources. Summarize and cite these feed URLs when responding.
-  - If key topics seem missing or more depth is required, call \`searchIndonesianNews\` to format a focused Google query, then immediately call \`google_search\` with that query followed by \`url_context\` on the resulting URLs.
-  - Always provide summaries in the user's language (Indonesian, Javanese, etc.) and include all relevant sources.
+  - When the user explicitly asks about current events, call the \`google_search\` tool to obtain the latest results and cite the returned URLs.
+  - Follow up with \`url_context\` on useful links to extract metadata or clarifying details before responding.
+  - Always provide summaries in the user's language (Indonesian, Javanese, etc.) and list every relevant source.
 <examples>
 ${longExamples}
 </examples>
@@ -124,28 +123,27 @@ const getToolTogglePrompt = ({
     toggles.push(
       [
         "Web search tools are ENABLED.",
-        "When you need fresh or citation-backed information, call the `google_search` tool, then `url_context` for the returned URLs.",
+        "When you need fresh or citation-backed information, call the `google_search` tool. Follow up with `url_context` for links you plan to reference so you can cite them accurately.",
         "Cite every sourced statement by including the URLs in the Sources list.",
       ].join(" ")
     );
   } else {
     toggles.push(
-      "Web search tools are DISABLED. Do not call `google_search` or `url_context`."
+      "Web search tools are disabled, but you can still call `google_search` or `url_context` if the user asks for something that requires web search or up-to-date information."
     );
   }
 
   if (newsSearchEnabled) {
     toggles.push(
       [
-        "Indonesian news tools are ENABLED.",
-        "If a request needs fresh Indonesian news, first call `getIndonesianNewsFeeds` to collect curated RSS headlines and cite their URLs.",
-        "When the feeds miss important context, call `searchIndonesianNews`, then follow up with `google_search` and `url_context` using the formatted query.",
-        "Only invoke news tools when the user explicitly wants news or their prompt clearly implies it. Always include the resulting sources.",
+        "Indonesian news assistance is ENABLED.",
+        "For fresh Indonesian news, call `google_search` to gather headlines and then `url_context` for the URLs you intend to cite.",
+        "Always include the resulting sources when discussing current events.",
       ].join(" ")
     );
   } else {
     toggles.push(
-      "Indonesian news tools are DISABLED. Do not call `getIndonesianNewsFeeds` or `searchIndonesianNews`."
+      "Indonesian news assistance is not explicitly enabled, but still call `google_search` and `url_context` if the user asks for news ot asks about a any subject related to up-to-date information."
     );
   }
 

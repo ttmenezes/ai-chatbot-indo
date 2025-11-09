@@ -102,6 +102,21 @@ function buildWeatherServiceError(message: string): WeatherToolError {
   };
 }
 
+type CoordinatesInput = {
+  latitude: number;
+  longitude: number;
+};
+
+type CityInput = {
+  city: string;
+};
+
+type LocationInput = {
+  location: string;
+};
+
+type WeatherToolInput = CoordinatesInput | CityInput | LocationInput;
+
 export const getWeather = tool({
   description:
     "Get the current weather at a location. You can provide either coordinates or a city name.",
@@ -115,26 +130,53 @@ export const getWeather = tool({
         .string()
         .describe("City name (e.g., 'San Francisco', 'New York', 'London')"),
     }),
+    z.object({
+      location: z
+        .string()
+        .describe(
+          "City or locality name (e.g., 'San Francisco', 'New York', 'London')"
+        ),
+    }),
   ]),
-  execute: async (
-    input: { latitude: number; longitude: number } | { city: string }
-  ) => {
+  execute: async (input: WeatherToolInput) => {
     try {
       let latitude: number;
       let longitude: number;
+      let providedCityName: string | undefined;
 
       if ("city" in input) {
-        const coords = await geocodeCity(input.city);
+        providedCityName = input.city;
+      } else if ("location" in input) {
+        providedCityName = input.location;
+      }
+
+      if (providedCityName) {
+        const coords = await geocodeCity(providedCityName);
         if (!coords) {
           return buildWeatherServiceError(
-            `Could not find coordinates for "${input.city}". Please check the city name.`
+            `Could not find coordinates for "${providedCityName}". Please check the city name.`
           );
         }
         latitude = coords.latitude;
         longitude = coords.longitude;
-      } else {
+      } else if ("latitude" in input && "longitude" in input) {
         latitude = input.latitude;
         longitude = input.longitude;
+      } else {
+        return buildWeatherServiceError(
+          "Please provide either a city/location name or both latitude and longitude."
+        );
+      }
+
+      if (
+        typeof latitude !== "number" ||
+        Number.isNaN(latitude) ||
+        typeof longitude !== "number" ||
+        Number.isNaN(longitude)
+      ) {
+        return buildWeatherServiceError(
+          "The provided coordinates are invalid. Please include both latitude and longitude as numbers."
+        );
       }
 
       const response = await fetch(
@@ -183,7 +225,7 @@ export const getWeather = tool({
 
       const enrichedWeatherData: WeatherToolSuccess = {
         ...weatherData,
-        cityName: "city" in input ? input.city : undefined,
+        cityName: providedCityName,
       };
 
       return enrichedWeatherData;

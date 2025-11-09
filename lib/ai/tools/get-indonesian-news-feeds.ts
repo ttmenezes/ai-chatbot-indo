@@ -569,6 +569,10 @@ export const getIndonesianNewsFeeds = tool({
           feedName: result.value.feed.name,
           articleCount: result.value.articles.length,
         });
+        console.log(
+          "[getIndonesianNewsFeeds] articles",
+          sources.map((source) => source.articleTitle)
+        );
         continue;
       }
 

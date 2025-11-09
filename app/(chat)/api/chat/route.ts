@@ -3,7 +3,6 @@ import { geolocation } from "@vercel/functions";
 import {
   convertToModelMessages,
   smoothStream,
-  stepCountIs,
   streamText,
   type UIMessage,
 } from "ai";
@@ -14,10 +13,7 @@ import { getUsage } from "tokenlens/helpers";
 import type { ChatModel } from "@/lib/ai/models";
 import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { myProvider } from "@/lib/ai/providers";
-import { getIndonesianNewsFeeds } from "@/lib/ai/tools/get-indonesian-news-feeds";
 import { getWeather } from "@/lib/ai/tools/get-weather";
-import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
-import { searchIndonesianNews } from "@/lib/ai/tools/search-indonesian-news";
 import { isProductionEnvironment } from "@/lib/constants";
 import { ChatSDKError } from "@/lib/errors";
 import type { ChatMessage } from "@/lib/types";
@@ -78,76 +74,108 @@ export async function POST(request: Request) {
 
     const model = myProvider.languageModel(modelId);
 
-    // Build tools object conditionally
+    // Build tools object
     const tools: Record<string, any> = {
       getWeather,
-      requestSuggestions: requestSuggestions({
-        session: null,
-        dataStream: null,
-      }),
+      google_search: google.tools.googleSearch({}),
+      url_context: google.tools.urlContext({}),
     };
 
-    // Add search tools if enabled
-    if (webSearchEnabled) {
-      tools.google_search = google.tools.googleSearch({});
-      tools.url_context = google.tools.urlContext({});
-    }
+    // Detect explicit news or search requests to prioritise web tools
+    const lastMessage = uiMessages.at(-1);
+    const userMessageText = lastMessage
+      ? lastMessage.parts
+          ?.filter((part) => part.type === "text")
+          .map((part) => (part as { text?: string }).text || "")
+          .join(" ") || ""
+      : "";
+    const userRequestedNews =
+      userMessageText.toLowerCase().includes("news") ||
+      userMessageText.toLowerCase().includes("search") ||
+      Boolean(newsSearchEnabled) ||
+      Boolean(webSearchEnabled);
 
-    if (newsSearchEnabled) {
-      tools.getIndonesianNewsFeeds = getIndonesianNewsFeeds;
-      tools.searchIndonesianNews = searchIndonesianNews;
-      // Need google_search to actually perform the search
-      if (!tools.google_search) {
-        tools.google_search = google.tools.googleSearch({});
-      }
-      // Also add url_context for news summaries
-      if (!tools.url_context) {
-        tools.url_context = google.tools.urlContext({});
-      }
-    }
+    const activeTools = userRequestedNews
+      ? ["google_search", "url_context", "getWeather"]
+      : ["getWeather"];
 
-    // Build activeTools array
-    const activeTools =
-      modelId === "chat-model-reasoning"
-        ? []
-        : ["getWeather", "requestSuggestions"];
-
-    if (webSearchEnabled) {
-      activeTools.push("google_search", "url_context");
-    }
-
-    if (newsSearchEnabled) {
-      activeTools.push("getIndonesianNewsFeeds");
-      activeTools.push("searchIndonesianNews");
-      if (!activeTools.includes("google_search")) {
-        activeTools.push("google_search");
-      }
-      if (!activeTools.includes("url_context")) {
-        activeTools.push("url_context");
-      }
-    }
+    // Build system prompt
+    const system = systemPrompt({
+      selectedChatModel: modelId,
+      requestHints,
+      webSearchEnabled,
+      newsSearchEnabled,
+      languagePreference,
+    });
 
     // Use AI SDK v5 streamText with toUIMessageStreamResponse
     const result = streamText({
       model,
-      system: systemPrompt({
-        selectedChatModel: modelId,
-        requestHints,
-        webSearchEnabled,
-        newsSearchEnabled,
-        languagePreference,
-      }),
+      system,
       messages: convertToModelMessages(uiMessages),
-      stopWhen: stepCountIs(5),
-      activeTools,
       experimental_transform: smoothStream({ chunking: "word" }),
       tools,
+      activeTools,
       experimental_telemetry: {
         isEnabled: isProductionEnvironment,
         functionId: "stream-text",
       },
+      onChunk: ({ chunk }) => {
+        // Log all chunk types to debug what we're receiving
+        if (
+          chunk.type === "tool-result" ||
+          chunk.type === "tool-input-start" ||
+          chunk.type === "tool-input-delta"
+        ) {
+          console.log("🔍 Chunk received:", {
+            type: chunk.type,
+            chunk: JSON.stringify(chunk, null, 2),
+          });
+        }
+        // Check for source chunks (from Gemini grounding)
+        if (chunk.type === "source") {
+          const sourceChunk = chunk as {
+            type: "source";
+            sourceType?: string;
+            id?: string;
+            url?: string;
+            title?: string;
+          };
+          console.log("🌐 Source chunk from Gemini grounding:", {
+            sourceType: sourceChunk.sourceType,
+            url: sourceChunk.url,
+            title: sourceChunk.title,
+          });
+        }
+      },
       onFinish: async ({ usage, response }) => {
         try {
+          // Check response.messages for tool calls and grounding metadata
+          for (const message of response.messages) {
+            // Check for provider metadata (where Gemini grounding sources are)
+            const messageWithMetadata = message as {
+              experimental_providerMetadata?: {
+                google?: {
+                  groundingMetadata?: {
+                    groundingChunks?: Array<{
+                      web?: {
+                        uri?: string | null;
+                        title?: string | null;
+                      } | null;
+                    }>;
+                  };
+                };
+              };
+            };
+            const googleMetadata =
+              messageWithMetadata.experimental_providerMetadata?.google;
+            if (googleMetadata?.groundingMetadata?.groundingChunks) {
+              const sources = googleMetadata.groundingMetadata.groundingChunks
+                .map((chunk) => chunk.web?.uri)
+                .filter((uri): uri is string => Boolean(uri));
+              console.log("🌐 Found Gemini grounding sources:", sources);
+            }
+          }
           const providers = await getTokenlensCatalog();
           const modelIdString = myProvider.languageModel(modelId).modelId;
           if (!modelIdString || !providers) {
@@ -165,79 +193,15 @@ export async function POST(request: Request) {
             ...summary,
             modelId: modelIdString,
           });
-
-          // Extract sources from Google Search/Grounding
-          if (webSearchEnabled || newsSearchEnabled) {
-            // Provider metadata and sources may be available at runtime but not in types
-            const responseWithMetadata = response as {
-              providerMetadata?: {
-                google?: {
-                  groundingMetadata?: {
-                    groundingChunks?: Array<{
-                      web?: {
-                        uri?: string | null;
-                        title?: string | null;
-                      } | null;
-                    }>;
-                  };
-                  urlContextMetadata?: {
-                    urlMetadata?: Array<{
-                      retrievedUrl?: string;
-                    }>;
-                  };
-                };
-              };
-              sources?: string[];
-            };
-
-            const googleMetadata =
-              responseWithMetadata?.providerMetadata?.google;
-            const sources: string[] = [];
-
-            // Extract from response.sources if available
-            if (responseWithMetadata?.sources) {
-              sources.push(...responseWithMetadata.sources);
-            }
-
-            // Extract from groundingMetadata
-            const groundingMetadata = googleMetadata?.groundingMetadata;
-            if (groundingMetadata?.groundingChunks) {
-              for (const chunk of groundingMetadata.groundingChunks) {
-                if (chunk.web?.uri && !sources.includes(chunk.web.uri)) {
-                  sources.push(chunk.web.uri);
-                }
-              }
-            }
-
-            // Extract from urlContextMetadata
-            const urlContextMetadata = googleMetadata?.urlContextMetadata;
-            if (urlContextMetadata?.urlMetadata) {
-              for (const metadata of urlContextMetadata.urlMetadata) {
-                if (
-                  metadata.retrievedUrl &&
-                  !sources.includes(metadata.retrievedUrl)
-                ) {
-                  sources.push(metadata.retrievedUrl);
-                }
-              }
-            }
-
-            // Log sources for debugging
-            if (sources.length > 0) {
-              console.log("Extracted sources:", sources);
-              // Note: Sources will be included in the message stream automatically by toUIMessageStreamResponse
-              // We'll handle display on the client side by checking message.sources or response.providerMetadata
-            }
-            console.log("Response:", response);
-            console.log("groundingMetadata:", groundingMetadata);
-            console.log("urlContextMetadata:", urlContextMetadata);
-            console.log("googleMetadata:", googleMetadata);
-          }
         } catch (err) {
           console.warn("TokenLens enrichment failed", err);
         }
       },
     });
+
+    // Debug: Log the full stream to see what's happening
+    // Note: This will consume the stream, so we need to create a new one
+    // For now, just return the response and let the enhanced logging above handle it
 
     // AI SDK v5: Use toUIMessageStreamResponse() directly
     return result.toUIMessageStreamResponse({

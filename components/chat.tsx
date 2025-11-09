@@ -113,6 +113,9 @@ export function Chat({
         };
       },
     }),
+    onToolCall: (toolCall) => {
+      console.log("Tool call:", toolCall);
+    },
     onData: (dataPart) => {
       setDataStream((ds) => (ds ? [...ds, dataPart] : []));
       if (dataPart.type === "data-usage") {

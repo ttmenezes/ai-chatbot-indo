@@ -322,6 +322,7 @@ function PureMultimodalInput({
         uploadQueue.length === 0 && (
           <SuggestedActions
             chatId={chatId}
+            languagePreference={normalizedLanguagePreference}
             selectedVisibilityType={selectedVisibilityType}
             sendMessage={sendMessage}
           />
