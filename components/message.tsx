@@ -292,60 +292,63 @@ const PurePreviewMessage = ({
               const { type } = part;
               const key = `message-${message.id}-part-${index}`;
 
-              if (type === "reasoning" && part.text?.trim().length > 0) {
-                return (
-                  <MessageReasoning
-                    isLoading={isLoading}
-                    key={key}
-                    reasoning={part.text}
-                  />
-                );
-              }
-
-              if (type === "text") {
-                if (mode === "view") {
+                if (type === "reasoning" && part.text?.trim().length > 0) {
                   return (
-                    <div key={key}>
-                      <MessageContent
-                        className={cn({
-                          "w-fit break-words rounded-2xl px-3 py-2 text-right text-white":
-                            message.role === "user",
-                          "bg-transparent px-0 py-0 text-left":
-                            message.role === "assistant",
-                        })}
-                        data-testid="message-content"
-                        style={
-                          message.role === "user"
-                            ? { backgroundColor: "#006cff" }
-                            : undefined
-                        }
-                      >
-                        <Response>{sanitizeText(part.text)}</Response>
-                      </MessageContent>
-                    </div>
-                  );
-                }
-
-                if (mode === "edit") {
-                  return (
-                    <div
-                      className="flex w-full flex-row items-start gap-3"
+                    <MessageReasoning
+                      isLoading={isLoading}
                       key={key}
-                    >
-                      <div className="size-8" />
-                      <div className="min-w-0 flex-1">
-                        <MessageEditor
-                          key={message.id}
-                          message={message}
-                          regenerate={regenerate}
-                          setMessages={setMessages}
-                          setMode={setMode}
-                        />
-                      </div>
-                    </div>
+                      reasoning={part.text}
+                    />
                   );
                 }
-              }
+
+                if (type === "text") {
+                  if (mode === "view") {
+                    return (
+                      <div key={key}>
+                        <MessageContent
+                          className={cn({
+                            "w-fit break-words rounded-2xl px-3 py-2 text-right shadow-sm transition-colors":
+                              message.role === "user",
+                            "bg-transparent px-0 py-0 text-left":
+                              message.role === "assistant",
+                          })}
+                          data-testid="message-content"
+                          style={
+                            message.role === "user"
+                              ? {
+                                  backgroundColor: "var(--user-bubble)",
+                                  color: "var(--user-bubble-foreground)",
+                                }
+                              : undefined
+                          }
+                        >
+                          <Response>{sanitizeText(part.text)}</Response>
+                        </MessageContent>
+                      </div>
+                    );
+                  }
+
+                  if (mode === "edit") {
+                    return (
+                      <div
+                        className="flex w-full flex-row items-start gap-3"
+                        key={key}
+                      >
+                        <div className="size-8" />
+                        <div className="min-w-0 flex-1">
+                          <MessageEditor
+                            key={message.id}
+                            message={message}
+                            regenerate={regenerate}
+                            setMessages={setMessages}
+                            setMode={setMode}
+                          />
+                        </div>
+                      </div>
+                    );
+                  }
+                }
 
               if (type === "tool-getWeather") {
                 const { toolCallId, state } = part;
