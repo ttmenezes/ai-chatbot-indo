@@ -12,43 +12,43 @@
 
 /* define design tokens (light mode) */
 :root {
-  --background: #e3c099;
-  --foreground: #6b3e2e;
-  --card: #ccb494;
-  --card-foreground: #6b3e2e;
-  --popover: #ccb494;
-  --popover-foreground: #6b3e2e;
-  --primary: #6b3e2e;
-  --primary-foreground: #e3c099;
-  --secondary: #ccb494;
-  --secondary-foreground: #6b3e2e;
-  --muted: #ccb494;
-  --muted-foreground: #6b3e2e;
-  --accent: #ccb494;
-  --accent-foreground: #6b3e2e;
+  --background: #f7f5f0;
+  --foreground: #1f2328;
+  --card: #ffffff;
+  --card-foreground: #1f2328;
+  --popover: #ffffff;
+  --popover-foreground: #1f2328;
+  --primary: #2f6787;
+  --primary-foreground: #f8fafc;
+  --secondary: #e4dccf;
+  --secondary-foreground: #1f2328;
+  --muted: #ede6db;
+  --muted-foreground: #56524a;
+  --accent: #f4b97a;
+  --accent-foreground: #33261b;
   --destructive: hsl(0 84.2% 60.2%);
   --destructive-foreground: hsl(0 0% 98%);
-  --border: #a1785c;
-  --input: #a1785c;
-  --ring: #6b3e2e;
-  --chart-1: #c38452;
-  --chart-2: #a1785c;
-  --chart-3: #795644;
-  --chart-4: #ccb494;
-  --chart-5: #e3c099;
-  --sidebar-background: #e3c099;
-  --sidebar-foreground: #6b3e2e;
-  --sidebar-primary: #6b3e2e;
-  --sidebar-primary-foreground: #e3c099;
-  --sidebar-accent: #ccb494;
-  --sidebar-accent-foreground: #6b3e2e;
-  --sidebar-border: #a1785c;
-  --sidebar-ring: #6b3e2e;
+  --border: #d7cdc1;
+  --input: #d7cdc1;
+  --ring: #2f6787;
+  --chart-1: #2f6787;
+  --chart-2: #f4b97a;
+  --chart-3: #40916c;
+  --chart-4: #d977a5;
+  --chart-5: #7e9cd0;
+  --sidebar-background: #f2ede3;
+  --sidebar-foreground: #1f2328;
+  --sidebar-primary: #2f6787;
+  --sidebar-primary-foreground: #f8fafc;
+  --sidebar-accent: #f4b97a;
+  --sidebar-accent-foreground: #33261b;
+  --sidebar-border: #d7cdc1;
+  --sidebar-ring: #2f6787;
   /* border radius unit */
   --radius: 0.5rem;
-  --sidebar: #e3c099;
-  --user-bubble: #6b3e2e;
-  --user-bubble-foreground: #e3c099;
+  --sidebar: #f2ede3;
+  --user-bubble: linear-gradient(135deg, #2f6787 0%, #3f7a9c 48%, #4f8fb1 100%);
+  --user-bubble-foreground: #f8fafc;
 }
 
 /* define design tokens (dark mode) */

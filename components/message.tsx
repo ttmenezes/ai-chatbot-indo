@@ -317,8 +317,11 @@ const PurePreviewMessage = ({
                         style={
                           message.role === "user"
                             ? {
-                                backgroundColor: "var(--user-bubble)",
+                                background: "var(--user-bubble)",
                                 color: "var(--user-bubble-foreground)",
+                                boxShadow:
+                                  "0 12px 30px -16px rgba(47, 103, 135, 0.55)",
+                                border: "1px solid rgba(47, 103, 135, 0.22)",
                               }
                             : undefined
                         }
