@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, startTransition, useActionState, useEffect, useState } from "react";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useActionState, useEffect, useState } from "react";
 import { AuthForm } from "@/components/auth-form";
 import { SubmitButton } from "@/components/submit-button";
 import { toast } from "@/components/toast";
@@ -12,7 +12,7 @@ import { type RegisterActionState, register } from "../actions";
 
 const VALID_LOCALES = ["id", "en", "jv", "su", "ace", "ban", "min"];
 
-export default function Page() {
+function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const localeParam = searchParams?.get("lang") ?? undefined;
@@ -87,5 +87,13 @@ export default function Page() {
         </div>
       </div>
     </LocaleProvider>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="flex h-dvh w-screen items-center justify-center">Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
   );
 }

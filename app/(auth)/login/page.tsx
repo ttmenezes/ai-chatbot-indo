@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useActionState, useEffect, useState } from "react";
+import {
+  Suspense,
+  startTransition,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 
 import { AuthForm } from "@/components/auth-form";
 import { SubmitButton } from "@/components/submit-button";
@@ -13,7 +19,7 @@ import { type LoginActionState, login } from "../actions";
 
 const VALID_LOCALES = ["id", "en", "jv", "su", "ace", "ban", "min"];
 
-export default function Page() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const localeParam = searchParams?.get("lang") ?? undefined;
@@ -87,5 +93,19 @@ export default function Page() {
         </div>
       </div>
     </LocaleProvider>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-dvh w-screen items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }

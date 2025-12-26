@@ -141,7 +141,6 @@ export async function POST(request: Request) {
       messages: convertToModelMessages(uiMessages),
       experimental_transform: smoothStream({ chunking: "word" }),
       tools,
-      maxSteps: 5, // Allow model to continue after tool calls
       experimental_telemetry: {
         isEnabled: isProductionEnvironment,
         functionId: "stream-text",
@@ -149,14 +148,7 @@ export async function POST(request: Request) {
       onChunk: ({ chunk }) => {
         // Log all chunk types to debug what we're receiving
         console.log("📦 Chunk type:", chunk.type);
-        if (
-          chunk.type === "tool-result" ||
-          chunk.type === "tool-input-start" ||
-          chunk.type === "tool-input-delta" ||
-          chunk.type === "tool-call-streaming-start" ||
-          chunk.type === "tool-call" ||
-          chunk.type === "finish"
-        ) {
+        if (chunk.type === "tool-result" || chunk.type === "tool-call") {
           console.log("🔍 Chunk received:", {
             type: chunk.type,
             chunk: JSON.stringify(chunk, null, 2),
@@ -179,10 +171,19 @@ export async function POST(request: Request) {
         }
         // Log text chunks
         if (chunk.type === "text-delta") {
-          console.log("📝 Text delta:", (chunk as any).textDelta?.substring(0, 50));
+          console.log(
+            "📝 Text delta:",
+            (chunk as any).textDelta?.substring(0, 50)
+          );
         }
       },
-      onStepFinish: ({ response, text, toolCalls, toolResults, finishReason }) => {
+      onStepFinish: ({
+        response,
+        text,
+        toolCalls,
+        toolResults,
+        finishReason,
+      }) => {
         console.log("🔄 Step finished:", {
           finishReason,
           hasText: Boolean(text?.trim()),

@@ -117,7 +117,7 @@ export class ChatPage {
 
     await this.page.getByTestId("model-selector").click();
     await this.page.getByTestId(`model-selector-item-${chatModelId}`).click();
-    expect(await this.getSelectedModel()).toBe(chatModel.name);
+    expect(await this.getSelectedModel()).toBe(chatModelId);
   }
 
   async getSelectedVisibility() {
