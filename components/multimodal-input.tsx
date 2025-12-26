@@ -168,11 +168,17 @@ function PureMultimodalInput({
       const normalized = normalizeLanguagePreference(storedLanguage);
       setLanguagePreference(normalized);
     }
-    if (storedInput && textareaRef.current) {
-      const domValue = textareaRef.current.value;
-      const finalValue = domValue || storedInput || "";
-      setInput(finalValue);
-      adjustHeight();
+    if (storedInput) {
+      const trimmedInput = storedInput.trim();
+      // Clear invalid values (empty strings or just quotes)
+      if (!trimmedInput || trimmedInput === '""') {
+        localStorage.setItem("input", "");
+      } else if (textareaRef.current) {
+        const domValue = textareaRef.current.value;
+        const finalValue = domValue || storedInput || "";
+        setInput(finalValue);
+        adjustHeight();
+      }
     }
   }, [adjustHeight, setInput]);
 
