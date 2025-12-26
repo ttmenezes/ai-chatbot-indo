@@ -82,21 +82,42 @@ export function Chat({
     generateId: generateUUID,
     transport: new DefaultChatTransport({
       api: "/api/chat",
-      fetch: fetchWithErrorHandlers,
+      fetch: async (url: RequestInfo | URL, options?: RequestInit) => {
+        // Check if deep research is enabled and route accordingly
+        if (options?.body) {
+          try {
+            const requestBody = JSON.parse(options.body as string);
+            if (requestBody.deepResearchEnabled) {
+              // Route to research API
+              const researchUrl =
+                url instanceof URL
+                  ? new URL("/api/research", url.origin)
+                  : typeof url === "string"
+                    ? "/api/research"
+                    : new URL("/api/research", new URL(url.url).origin);
+              return await fetchWithErrorHandlers(researchUrl, options);
+            }
+          } catch {
+            // If parsing fails, continue with original request
+          }
+        }
+        return await fetchWithErrorHandlers(url, options);
+      },
       prepareSendMessagesRequest(request) {
-        // Extract webSearch and newsSearch from the last message's data
+        // Extract webSearch and deepResearch from the last message's data
         // In AI SDK v5, data may exist at runtime but not in types
         const lastMessage = request.messages.at(-1) as
           | (ChatMessage & {
               data?: {
                 webSearchEnabled?: boolean;
-                newsSearchEnabled?: boolean;
+                deepResearchEnabled?: boolean;
                 languagePreference?: string;
               };
             })
           | undefined;
         const webSearchEnabled = lastMessage?.data?.webSearchEnabled ?? false;
-        const newsSearchEnabled = lastMessage?.data?.newsSearchEnabled ?? false;
+        const deepResearchEnabled =
+          lastMessage?.data?.deepResearchEnabled ?? false;
         const languagePreference =
           lastMessage?.data?.languagePreference ?? "auto";
 
@@ -106,16 +127,13 @@ export function Chat({
             messages: request.messages, // Send all messages, not just last one
             selectedChatModel: currentModelIdRef.current,
             webSearchEnabled,
-            newsSearchEnabled,
+            deepResearchEnabled,
             languagePreference,
             ...request.body,
           },
         };
       },
     }),
-    onToolCall: (toolCall) => {
-      console.log("Tool call:", toolCall);
-    },
     onData: (dataPart) => {
       setDataStream((ds) => (ds ? [...ds, dataPart] : []));
       if (dataPart.type === "data-usage") {

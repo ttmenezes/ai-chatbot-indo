@@ -12,6 +12,7 @@ export type TranslationKey =
   | "toastUploadFailed"
   | "webSearch"
   | "news"
+  | "deepResearch"
   | "toggleTitle"
   | "inputPlaceholder"
   | "thinkingPrimary"
@@ -37,6 +38,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Gagal mengunggah berkas, silakan coba lagi!",
     webSearch: "Pencarian Web",
     news: "Berita",
+    deepResearch: "Riset Mendalam",
     toggleTitle: "Ubah status {label}",
     inputPlaceholder: "Ketik pesan...",
     thinkingPrimary: "Sedang memikirkan jawaban...",
@@ -59,6 +61,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas hana le berhasil, coba lom!",
     webSearch: "Peusie web",
     news: "Beurita",
+    deepResearch: "Riset Jeuleus",
     toggleTitle: "Peuganto {label}",
     inputPlaceholder: "Tulis pesan...",
     thinkingPrimary: "Lagi meupeugah jawaban...",
@@ -81,6 +84,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas gagal diunggah, coba ulangi!",
     webSearch: "Pencarian Web",
     news: "Berita",
+    deepResearch: "Riset Jero",
     toggleTitle: "Gantian {label}",
     inputPlaceholder: "Kirimakan pesan...",
     thinkingPrimary: "Lagi mikir jawaban...",
@@ -103,6 +107,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Failed to upload the file, please try again!",
     webSearch: "Web Search",
     news: "News",
+    deepResearch: "Deep Research",
     toggleTitle: "Toggle {label}",
     inputPlaceholder: "Send a message...",
     thinkingPrimary: "Thinking...",
@@ -125,6 +130,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas tak bisa kaungg?h, coba malem!",
     webSearch: "Pencarian Web",
     news: "Berita",
+    deepResearch: "Riset Daleng",
     toggleTitle: "Ganti {label}",
     inputPlaceholder: "Nulis pesen...",
     thinkingPrimary: "Lagi mikir jawaban...",
@@ -147,6 +153,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas gagal diunggah, cuba lagi!",
     webSearch: "Cari Web",
     news: "Berita",
+    deepResearch: "Riset Dalam",
     toggleTitle: "Ganti {label}",
     inputPlaceholder: "Tulis pesan...",
     thinkingPrimary: "Masih manyarah jawaban...",
@@ -169,6 +176,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas gagal diunggah, cobian deui!",
     webSearch: "Pilarian Web",
     news: "Warta",
+    deepResearch: "Panalungtikan Jero",
     toggleTitle: "Pindahkeun {label}",
     inputPlaceholder: "Ketik pesen...",
     thinkingPrimary: "Sedang mikir jawaban...",
@@ -191,6 +199,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas gagal kaunggahang, sujati coba malih!",
     webSearch: "Pangelah Web",
     news: "Warta",
+    deepResearch: "Riset Dalem",
     toggleTitle: "Gentosang {label}",
     inputPlaceholder: "Tulisin pesan...",
     thinkingPrimary: "Taler ngametuang wangsalan...",
@@ -213,6 +222,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas tena bisa naikkang, cobai ulang!",
     webSearch: "Pasusureng Web",
     news: "Berita",
+    deepResearch: "Riset Malampe",
     toggleTitle: "Pakkalinga {label}",
     inputPlaceholder: "Tulis pesan...",
     thinkingPrimary: "Lagi massappa jawaban...",
@@ -235,6 +245,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas gagal diunggah, coba meneh!",
     webSearch: "Panggolekan Web",
     news: "Warta",
+    deepResearch: "Riset Jero",
     toggleTitle: "Pindhahake {label}",
     inputPlaceholder: "Ketik pesen...",
     thinkingPrimary: "Isih mikir jawaban...",
@@ -257,6 +268,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas indak berhasil diunggah, coba lai!",
     webSearch: "Carian Web",
     news: "Berito",
+    deepResearch: "Risek Dalam",
     toggleTitle: "Pindahkan {label}",
     inputPlaceholder: "Tulis pesan...",
     thinkingPrimary: "Sedang manyo pikir jawaban...",
@@ -279,6 +291,7 @@ const translations: Record<SupportedLanguage, TranslationMap> = {
     toastUploadFailed: "Berkas ndang boi diunggah, coba ma ulang!",
     webSearch: "Pangiduan Web",
     news: "Berita",
+    deepResearch: "Riset Naung",
     toggleTitle: "Pindahon {label}",
     inputPlaceholder: "Tulis pesan...",
     thinkingPrimary: "Masih mamikirkon jawaban...",

@@ -48,6 +48,7 @@ import {
   CpuIcon,
   GlobeIcon,
   PaperclipIcon,
+  SparklesIcon,
   StopIcon,
 } from "./icons";
 import { PreviewAttachment } from "./preview-attachment";
@@ -136,7 +137,7 @@ function PureMultimodalInput({
 
   // Initialize with false to prevent hydration mismatch, sync with localStorage after mount
   const [webSearchEnabled, setWebSearchEnabled] = useState(false);
-  const [newsSearchEnabled, setNewsSearchEnabled] = useState(false);
+  const [deepResearchEnabled, setDeepResearchEnabled] = useState(false);
   const [languagePreference, setLanguagePreference] = useLocalStorage<string>(
     "chat-language-preference",
     "auto"
@@ -166,12 +167,12 @@ function PureMultimodalInput({
   // Sync with localStorage after component mounts (client-side only)
   useEffect(() => {
     const storedWebSearch = localStorage.getItem("webSearchEnabled");
-    const storedNewsSearch = localStorage.getItem("newsSearchEnabled");
+    const storedDeepResearch = localStorage.getItem("deepResearchEnabled");
     if (storedWebSearch === "true") {
       setWebSearchEnabled(true);
     }
-    if (storedNewsSearch === "true") {
-      setNewsSearchEnabled(true);
+    if (storedDeepResearch === "true") {
+      setDeepResearchEnabled(true);
     }
   }, []);
 
@@ -181,8 +182,8 @@ function PureMultimodalInput({
   }, [webSearchEnabled]);
 
   useEffect(() => {
-    localStorage.setItem("newsSearchEnabled", String(newsSearchEnabled));
-  }, [newsSearchEnabled]);
+    localStorage.setItem("deepResearchEnabled", String(deepResearchEnabled));
+  }, [deepResearchEnabled]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -227,7 +228,7 @@ function PureMultimodalInput({
       ],
       data: {
         webSearchEnabled,
-        newsSearchEnabled,
+        deepResearchEnabled,
         languagePreference: normalizedLanguagePreference,
       },
     } as unknown as Parameters<typeof sendMessage>[0]);
@@ -251,7 +252,7 @@ function PureMultimodalInput({
     chatId,
     resetHeight,
     webSearchEnabled,
-    newsSearchEnabled,
+    deepResearchEnabled,
     normalizedLanguagePreference,
   ]);
 
@@ -419,13 +420,13 @@ function PureMultimodalInput({
               })}
             />
             <SearchToggleButton
-              enabled={newsSearchEnabled}
-              icon={BookIcon}
-              label={translator("news")}
-              onClick={() => setNewsSearchEnabled(!newsSearchEnabled)}
+              enabled={deepResearchEnabled}
+              icon={SparklesIcon}
+              label={translator("deepResearch")}
+              onClick={() => setDeepResearchEnabled(!deepResearchEnabled)}
               status={status}
               title={translator("toggleTitle", {
-                label: translator("news"),
+                label: translator("deepResearch"),
               })}
             />
             <ModelSelectorCompact
