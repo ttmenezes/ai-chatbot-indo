@@ -370,10 +370,10 @@ export function Weather({
       className={cx(
         "relative flex w-full flex-col gap-6 overflow-hidden rounded-3xl p-6 shadow-lg backdrop-blur-sm",
         {
-          "bg-gradient-to-br from-sky-400 via-blue-500 to-blue-600": isDay,
+          "bg-gradient-to-br from-amber-400 via-orange-500 to-orange-600": isDay,
         },
         {
-          "bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900":
+          "bg-gradient-to-br from-amber-900 via-orange-900 to-slate-900":
             !isDay,
         }
       )}
@@ -391,7 +391,7 @@ export function Weather({
             <div
               className={cx("text-white/90", {
                 "text-yellow-200": isDay,
-                "text-blue-200": !isDay,
+                "text-orange-200": !isDay,
               })}
             >
               {isDay ? <SunIcon size={48} /> : <MoonIcon size={48} />}
@@ -449,7 +449,7 @@ export function Weather({
                   <div
                     className={cx("text-white/60", {
                       "text-yellow-200": isDay,
-                      "text-blue-200": !isDay,
+                      "text-orange-200": !isDay,
                     })}
                   >
                     <CloudIcon size={20} />

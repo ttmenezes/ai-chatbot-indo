@@ -9,7 +9,6 @@ import {
   useRef,
   useState,
 } from "react";
-// Stateless: Messages managed client-side, no server actions needed
 import type { ChatMessage } from "@/lib/types";
 import { getTextFromMessage } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -82,7 +81,7 @@ export function MessageEditor({
           onClick={() => {
             setIsSubmitting(true);
 
-            // Stateless: Update messages client-side, removing trailing messages
+            // Update messages client-side, removing trailing messages
             setMessages((messages) => {
               const index = messages.findIndex((m) => m.id === message.id);
 

@@ -1,25 +1,26 @@
 "use client";
 
+import { Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { memo } from "react";
 import { useWindowSize } from "usehooks-ts";
+import { FeedbackDialog } from "@/components/feedback-dialog";
 import { SidebarToggle } from "@/components/sidebar-toggle";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "./icons";
+import { getTranslations, type SupportedLocale } from "@/lib/i18n";
+import { RestartIcon } from "./icons";
 import { useSidebar } from "./ui/sidebar";
-import { VisibilitySelector, type VisibilityType } from "./visibility-selector";
 
-function PureChatHeader({
-  chatId,
-  selectedVisibilityType,
-  isReadonly,
-}: {
-  chatId: string;
-  selectedVisibilityType: VisibilityType;
-  isReadonly: boolean;
-}) {
+type ChatHeaderProps = {
+  locale?: SupportedLocale;
+};
+
+function PureChatHeader({ locale = "id" }: ChatHeaderProps) {
+  const t = getTranslations(locale);
   const router = useRouter();
   const { open } = useSidebar();
+  const { setTheme, resolvedTheme } = useTheme();
 
   const { width: windowWidth } = useWindowSize();
 
@@ -36,26 +37,49 @@ function PureChatHeader({
           }}
           variant="outline"
         >
-          <PlusIcon />
-          <span className="md:sr-only">Obrolan baru</span>
+          <RestartIcon />
+          <span className="md:sr-only">{t.newChat}</span>
         </Button>
       )}
 
-      {!isReadonly && (
+      {/* {!isReadonly && (
         <VisibilitySelector
           chatId={chatId}
           className="order-1 md:order-2"
           selectedVisibilityType={selectedVisibilityType}
+          showPublicOption={showPublicOption}
         />
-      )}
+      )} */}
+
+      <Button
+        aria-label={
+          resolvedTheme === "dark"
+            ? "Switch to light mode"
+            : "Switch to dark mode"
+        }
+        className="h-8 px-2"
+        onClick={() => {
+          setTheme(resolvedTheme === "dark" ? "light" : "dark");
+        }}
+        title={
+          resolvedTheme === "dark"
+            ? "Switch to light mode"
+            : "Switch to dark mode"
+        }
+        variant="outline"
+      >
+        {resolvedTheme === "dark" ? (
+          <Sun size={16} />
+        ) : resolvedTheme === "light" ? (
+          <Moon size={16} />
+        ) : (
+          <Moon size={16} />
+        )}
+      </Button>
+
+      <FeedbackDialog locale={locale} />
     </header>
   );
 }
 
-export const ChatHeader = memo(PureChatHeader, (prevProps, nextProps) => {
-  return (
-    prevProps.chatId === nextProps.chatId &&
-    prevProps.selectedVisibilityType === nextProps.selectedVisibilityType &&
-    prevProps.isReadonly === nextProps.isReadonly
-  );
-});
+export const ChatHeader = memo(PureChatHeader);

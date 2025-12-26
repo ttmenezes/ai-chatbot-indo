@@ -11,14 +11,14 @@ export const myProvider = isTestEnvironment
       const {
         artifactModel,
         chatModel,
-        flashModel,
+        // flashModel, // Disabled - doesn't work well with provider-defined tools
         reasoningModel,
         titleModel,
       } = require("./models.mock");
       return customProvider({
         languageModels: {
           "chat-model": chatModel,
-          "chat-model-flash": flashModel,
+          // "chat-model-flash": flashModel, // Disabled - doesn't work well with provider-defined tools
           "chat-model-reasoning": reasoningModel,
           "title-model": titleModel,
           "artifact-model": artifactModel,
@@ -27,10 +27,14 @@ export const myProvider = isTestEnvironment
     })()
   : customProvider({
       languageModels: {
+        // Quick model - Flash Lite (works well with grounding/search tools)
         "chat-model": google("gemini-2.5-flash-lite-preview-09-2025"),
-        "chat-model-flash": google("gemini-2.5-flash"),
+        // NOTE: gemini-2.5-flash disabled - doesn't work well with provider-defined tools
+        // The model calls google_search but fails to generate text responses after grounding
+        // "chat-model-flash": google("gemini-2.5-flash"),
+        // Deep/Slow model - Flash with reasoning middleware
         "chat-model-reasoning": wrapLanguageModel({
-          model: google("gemini-2.5-flash"),
+          model: google("gemini-2.5-flash-lite-preview-09-2025"),
           middleware: extractReasoningMiddleware({ tagName: "think" }),
         }),
         "title-model": google("gemini-2.5-flash-lite-preview-09-2025"),

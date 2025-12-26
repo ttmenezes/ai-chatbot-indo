@@ -9,6 +9,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useLocale } from "@/lib/locale-context";
 import { cn } from "@/lib/utils";
 import { Response } from "./response";
 
@@ -115,6 +116,7 @@ export type ReasoningTriggerProps = ComponentProps<typeof CollapsibleTrigger>;
 export const ReasoningTrigger = memo(
   ({ className, children, ...props }: ReasoningTriggerProps) => {
     const { isStreaming, isOpen, duration } = useReasoning();
+    const { translator } = useLocale();
 
     return (
       <CollapsibleTrigger
@@ -128,9 +130,9 @@ export const ReasoningTrigger = memo(
           <>
             <BrainIcon className="size-4" />
             {isStreaming || duration === 0 ? (
-              <p>Memikirkan jawaban...</p>
+              <p>{translator("reasoningThinking")}</p>
             ) : (
-              <p>Berpikir selama {duration} dtk</p>
+              <p>{translator("reasoningThoughtFor", { duration: String(duration) })}</p>
             )}
             <ChevronDownIcon
               className={cn(

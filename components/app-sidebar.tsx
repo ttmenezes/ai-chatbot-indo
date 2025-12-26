@@ -2,30 +2,33 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-// Stateless: No user authentication needed
-import { PlusIcon } from "@/components/icons";
-import { SidebarHistory } from "@/components/sidebar-history";
+import { RestartIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   Sidebar,
-  SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Textarea } from "@/components/ui/textarea";
+import { getTranslations, type SupportedLocale } from "@/lib/i18n";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
-// Stateless: No user prop needed
-export function AppSidebar() {
+type AppSidebarProps = {
+  locale?: SupportedLocale;
+};
+
+export function AppSidebar({ locale = "id" }: AppSidebarProps) {
+  const t = getTranslations(locale);
   const router = useRouter();
   const { setOpenMobile } = useSidebar();
 
   return (
-    <>
-      <Sidebar className="group-data-[side=left]:border-r-0">
-        <SidebarHeader>
-          <SidebarMenu>
+    <Sidebar className="group-data-[side=left]:border-r-0">
+      <SidebarHeader>
+        <SidebarMenu>
+          <div className="flex flex-col gap-4">
             <div className="flex flex-row items-center justify-between">
               <Link
                 className="flex flex-row items-center gap-3"
@@ -35,11 +38,10 @@ export function AppSidebar() {
                 }}
               >
                 <span className="cursor-pointer rounded-md px-2 font-semibold text-lg hover:bg-muted">
-                  Chatbot
+                  {t.appName}
                 </span>
               </Link>
               <div className="flex flex-row gap-1">
-                {/* Stateless: Delete all button removed (no server-side chats to delete) */}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -52,26 +54,42 @@ export function AppSidebar() {
                       type="button"
                       variant="ghost"
                     >
-                      <PlusIcon />
+                      <RestartIcon />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent align="end" className="hidden md:block">
-                    New Chat
+                    {t.newChat}
                   </TooltipContent>
                 </Tooltip>
               </div>
             </div>
-          </SidebarMenu>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarHistory />
-        </SidebarContent>
-        <SidebarFooter>
-          {/* Stateless: User nav removed (no authentication) */}
-        </SidebarFooter>
-      </Sidebar>
 
-      {/* Stateless: Delete all dialog removed (no server-side chats to delete) */}
-    </>
+            {/* About Section */}
+            <div className="rounded-lg bg-muted/50 p-3 text-xs">
+              <p className="mb-1 font-medium text-foreground">{t.aboutTitle}</p>
+              <p className="text-muted-foreground leading-relaxed">
+                {t.aboutDescription}
+              </p>
+            </div>
+          </div>
+        </SidebarMenu>
+      </SidebarHeader>
+      {/* <SidebarContent>
+        <SidebarHistory locale={locale} />
+      </SidebarContent> */}
+      <SidebarFooter>
+        {/* Feedback Section */}
+        <div className="rounded-lg border p-3">
+          <p className="mb-2 font-medium text-sm">{t.feedbackInputTitle}</p>
+          <Textarea
+            className="min-h-[80px] resize-none text-xs"
+            placeholder={t.feedbackPlaceholder}
+          />
+          <Button className="mt-2 w-full text-xs" size="sm">
+            {t.feedbackSubmit}
+          </Button>
+        </div>
+      </SidebarFooter>
+    </Sidebar>
   );
 }

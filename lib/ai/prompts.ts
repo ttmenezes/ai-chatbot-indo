@@ -57,11 +57,6 @@ const getPromptLanguages = () => {
 
 export const promptLanguages = getPromptLanguages();
 
-const promptLanguageSet = new Set(promptLanguages);
-
-export const isValidPromptLanguage = (language: string) =>
-  promptLanguageSet.has(language);
-
 export const formatPromptLanguage = (language: string) =>
   language
     .split("_")
@@ -77,10 +72,21 @@ You are a friendly assistant for Indonesian people! Keep your responses concise 
 You can speak Indonesian and low-resource Indonesian languages very well. Here are some examples
 of translations across many Indonesian languages:
 
-  **When news search is enabled:**
-  - When the user explicitly asks about current events, call the \`google_search\` tool to obtain the latest results and cite the returned URLs.
-  - Follow up with \`url_context\` on useful links to extract metadata or clarifying details before responding.
-  - Always provide summaries in the user's language (Indonesian, Javanese, etc.) and list every relevant source.
+**CRITICAL INSTRUCTION FOR SEARCH:**
+When the user asks about news, current events, or anything requiring up-to-date information:
+1. A search will be performed automatically using grounding
+2. You MUST process the search results that are returned to you
+3. You MUST summarize the key findings from those search results in your response
+4. You MUST ALWAYS generate a complete text response - NEVER end with just a tool call
+5. Include sources/URLs in your response when citing information
+6. Respond in the user's language (Indonesian, Javanese, etc.)
+
+Example response format after receiving search results:
+"Berikut adalah berita terbaru hari ini:
+1. [Summary of news item 1] - [Source]
+2. [Summary of news item 2] - [Source]
+..."
+
 <examples>
 ${longExamples}
 </examples>
@@ -123,13 +129,13 @@ const getToolTogglePrompt = ({
     toggles.push(
       [
         "Web search tools are ENABLED.",
-        "When you need fresh or citation-backed information, call the `google_search` tool. Follow up with `url_context` for links you plan to reference so you can cite them accurately.",
+        "When you need fresh or citation-backed information, call `google_search` (this exact tool name, not 'search'). Follow up with `url_context` for links you plan to reference so you can cite them accurately.",
         "Cite every sourced statement by including the URLs in the Sources list.",
       ].join(" ")
     );
   } else {
     toggles.push(
-      "Web search tools are disabled, but you can still call `google_search` or `url_context` if the user asks for something that requires web search or up-to-date information."
+      "Web search tools are disabled, but you can still call `google_search` (exact tool name) or `url_context` if the user asks for something that requires web search or up-to-date information."
     );
   }
 
@@ -137,13 +143,13 @@ const getToolTogglePrompt = ({
     toggles.push(
       [
         "Indonesian news assistance is ENABLED.",
-        "For fresh Indonesian news, call `google_search` to gather headlines and then `url_context` for the URLs you intend to cite.",
+        "For fresh Indonesian news, call `google_search` (exact tool name) to gather headlines and then `url_context` for the URLs you intend to cite.",
         "Always include the resulting sources when discussing current events.",
       ].join(" ")
     );
   } else {
     toggles.push(
-      "Indonesian news assistance is not explicitly enabled, but still call `google_search` and `url_context` if the user asks for news ot asks about a any subject related to up-to-date information."
+      "Indonesian news assistance is not explicitly enabled, but still call `google_search` (exact tool name) and `url_context` if the user asks for news or asks about any subject related to up-to-date information."
     );
   }
 
@@ -151,11 +157,7 @@ const getToolTogglePrompt = ({
 };
 
 const getLanguagePreferencePrompt = (languagePreference?: string) => {
-  if (
-    !languagePreference ||
-    languagePreference === "auto" ||
-    !isValidPromptLanguage(languagePreference)
-  ) {
+  if (!languagePreference || languagePreference === "auto") {
     return "Likely user language: auto (detect based on user messages).";
   }
 

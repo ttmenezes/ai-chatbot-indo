@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
 import { ChatHeader } from "@/components/chat-header";
@@ -21,6 +21,8 @@ import { useArtifactSelector } from "@/hooks/use-artifact";
 import { useAutoResume } from "@/hooks/use-auto-resume";
 import { useChatVisibility } from "@/hooks/use-chat-visibility";
 import { ChatSDKError } from "@/lib/errors";
+import type { SupportedLocale } from "@/lib/i18n";
+import { LocaleProvider } from "@/lib/locale-context";
 import type { Attachment, ChatMessage, Vote } from "@/lib/types";
 import type { AppUsage } from "@/lib/usage";
 import { fetcher, fetchWithErrorHandlers, generateUUID } from "@/lib/utils";
@@ -40,6 +42,7 @@ export function Chat({
   isReadonly,
   autoResume,
   initialLastContext,
+  initialLocale,
 }: {
   id: string;
   initialMessages: ChatMessage[];
@@ -48,6 +51,7 @@ export function Chat({
   isReadonly: boolean;
   autoResume: boolean;
   initialLastContext?: AppUsage;
+  initialLocale?: SupportedLocale;
 }) {
   const { visibilityType } = useChatVisibility({
     chatId: id,
@@ -167,6 +171,18 @@ export function Chat({
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const isArtifactVisible = useArtifactSelector((state) => state.isVisible);
 
+  // Get current language preference from the last user message or URL param
+  const currentLanguagePreference = useMemo(() => {
+    const lastUserMessage = [...messages]
+      .reverse()
+      .find((m) => m.role === "user") as
+      | (ChatMessage & {
+          data?: { languagePreference?: string };
+        })
+      | undefined;
+    return lastUserMessage?.data?.languagePreference ?? initialLocale ?? "auto";
+  }, [messages, initialLocale]);
+
   useAutoResume({
     autoResume,
     initialMessages,
@@ -175,13 +191,9 @@ export function Chat({
   });
 
   return (
-    <>
+    <LocaleProvider locale={currentLanguagePreference}>
       <div className="overscroll-behavior-contain flex h-dvh min-w-0 touch-pan-y flex-col bg-background">
-        <ChatHeader
-          chatId={id}
-          isReadonly={isReadonly}
-          selectedVisibilityType={initialVisibilityType}
-        />
+        <ChatHeader />
 
         <Messages
           chatId={id}
@@ -263,6 +275,6 @@ export function Chat({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </LocaleProvider>
   );
 }

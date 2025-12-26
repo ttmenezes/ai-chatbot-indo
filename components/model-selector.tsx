@@ -11,18 +11,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { entitlementsByUserType } from "@/lib/ai/entitlements";
-import { chatModels } from "@/lib/ai/models";
+import { getLocalizedChatModels } from "@/lib/ai/models";
+import type { SupportedLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { CheckCircleFillIcon, ChevronDownIcon } from "./icons";
+
+type ModelSelectorProps = {
+  session: Session;
+  selectedModelId: string;
+  locale?: SupportedLocale;
+} & React.ComponentProps<typeof Button>;
 
 export function ModelSelector({
   session,
   selectedModelId,
+  locale = "id",
   className,
-}: {
-  session: Session;
-  selectedModelId: string;
-} & React.ComponentProps<typeof Button>) {
+}: ModelSelectorProps) {
   const [open, setOpen] = useState(false);
   const [optimisticModelId, setOptimisticModelId] =
     useOptimistic(selectedModelId);
@@ -30,7 +35,11 @@ export function ModelSelector({
   const userType = session.user.type;
   const { availableChatModelIds } = entitlementsByUserType[userType];
 
-  const availableChatModels = chatModels.filter((chatModel) =>
+  // Get localized chat models
+  const localizedChatModels = getLocalizedChatModels(locale);
+
+  // Filter to available models
+  const availableChatModels = localizedChatModels.filter((chatModel) =>
     availableChatModelIds.includes(chatModel.id)
   );
 

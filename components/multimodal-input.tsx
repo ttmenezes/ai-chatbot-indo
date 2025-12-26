@@ -17,7 +17,7 @@ import {
   useState,
 } from "react";
 import { toast } from "sonner";
-import { useLocalStorage, useWindowSize } from "usehooks-ts";
+import { useWindowSize } from "usehooks-ts";
 import { saveChatModelAsCookie } from "@/app/(chat)/actions";
 import {
   Select,
@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { chatModels } from "@/lib/ai/models";
+import { getLocalizedChatModels } from "@/lib/ai/models";
 import { formatPromptLanguage, promptLanguages } from "@/lib/ai/prompts";
 import { myProvider } from "@/lib/ai/providers";
 import { createTranslator } from "@/lib/i18n";
@@ -129,18 +129,11 @@ function PureMultimodalInput({
     }
   }, []);
 
-  const [localStorageInput, setLocalStorageInput] = useLocalStorage(
-    "input",
-    ""
-  );
-
-  // Initialize with false to prevent hydration mismatch, sync with localStorage after mount
+  // Initialize with defaults to prevent hydration mismatch, sync with localStorage after mount
   const [webSearchEnabled, setWebSearchEnabled] = useState(false);
   const [newsSearchEnabled, setNewsSearchEnabled] = useState(false);
-  const [languagePreference, setLanguagePreference] = useLocalStorage<string>(
-    "chat-language-preference",
-    "auto"
-  );
+  const [languagePreference, setLanguagePreference] = useState("auto");
+  const [isMounted, setIsMounted] = useState(false);
 
   const normalizedLanguagePreference = useMemo(
     () => normalizeLanguagePreference(languagePreference),
@@ -157,48 +150,56 @@ function PureMultimodalInput({
     [translator]
   );
 
+  // Sync all localStorage values after mount to prevent hydration mismatch
   useEffect(() => {
-    if (languagePreference !== normalizedLanguagePreference) {
-      setLanguagePreference(normalizedLanguagePreference);
-    }
-  }, [languagePreference, normalizedLanguagePreference, setLanguagePreference]);
-
-  // Sync with localStorage after component mounts (client-side only)
-  useEffect(() => {
+    setIsMounted(true);
     const storedWebSearch = localStorage.getItem("webSearchEnabled");
     const storedNewsSearch = localStorage.getItem("newsSearchEnabled");
+    const storedLanguage = localStorage.getItem("chat-language-preference");
+    const storedInput = localStorage.getItem("input");
+
     if (storedWebSearch === "true") {
       setWebSearchEnabled(true);
     }
     if (storedNewsSearch === "true") {
       setNewsSearchEnabled(true);
     }
-  }, []);
-
-  // Persist to localStorage when values change
-  useEffect(() => {
-    localStorage.setItem("webSearchEnabled", String(webSearchEnabled));
-  }, [webSearchEnabled]);
-
-  useEffect(() => {
-    localStorage.setItem("newsSearchEnabled", String(newsSearchEnabled));
-  }, [newsSearchEnabled]);
-
-  useEffect(() => {
-    if (textareaRef.current) {
+    if (storedLanguage) {
+      const normalized = normalizeLanguagePreference(storedLanguage);
+      setLanguagePreference(normalized);
+    }
+    if (storedInput && textareaRef.current) {
       const domValue = textareaRef.current.value;
-      // Prefer DOM value over localStorage to handle hydration
-      const finalValue = domValue || localStorageInput || "";
+      const finalValue = domValue || storedInput || "";
       setInput(finalValue);
       adjustHeight();
     }
-    // Only run once after hydration
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [adjustHeight, localStorageInput, setInput]);
+  }, [adjustHeight, setInput]);
+
+  // Persist to localStorage when values change (only after mount)
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem("webSearchEnabled", String(webSearchEnabled));
+    }
+  }, [webSearchEnabled, isMounted]);
 
   useEffect(() => {
-    setLocalStorageInput(input);
-  }, [input, setLocalStorageInput]);
+    if (isMounted) {
+      localStorage.setItem("newsSearchEnabled", String(newsSearchEnabled));
+    }
+  }, [newsSearchEnabled, isMounted]);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem("chat-language-preference", languagePreference);
+    }
+  }, [languagePreference, isMounted]);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem("input", input);
+    }
+  }, [input, isMounted]);
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(event.target.value);
@@ -233,7 +234,7 @@ function PureMultimodalInput({
     } as unknown as Parameters<typeof sendMessage>[0]);
 
     setAttachments([]);
-    setLocalStorageInput("");
+    localStorage.setItem("input", "");
     resetHeight();
     setInput("");
 
@@ -246,7 +247,6 @@ function PureMultimodalInput({
     attachments,
     sendMessage,
     setAttachments,
-    setLocalStorageInput,
     width,
     chatId,
     resetHeight,
@@ -429,6 +429,7 @@ function PureMultimodalInput({
               })}
             />
             <ModelSelectorCompact
+              languagePreference={normalizedLanguagePreference}
               onModelChange={onModelChange}
               selectedModelId={selectedModelId}
             />
@@ -556,9 +557,11 @@ const AttachmentsButton = memo(PureAttachmentsButton);
 function PureModelSelectorCompact({
   selectedModelId,
   onModelChange,
+  languagePreference = "auto",
 }: {
   selectedModelId: string;
   onModelChange?: (modelId: string) => void;
+  languagePreference?: string;
 }) {
   const [optimisticModelId, setOptimisticModelId] = useState(selectedModelId);
 
@@ -566,14 +569,34 @@ function PureModelSelectorCompact({
     setOptimisticModelId(selectedModelId);
   }, [selectedModelId]);
 
-  const selectedModel = chatModels.find(
+  // Get localized models based on language preference
+  const localizedModels = useMemo(() => {
+    // Map language preference to locale
+    const localeMap: Record<
+      string,
+      "id" | "en" | "jv" | "su" | "ace" | "ban" | "min"
+    > = {
+      auto: "id",
+      indonesian: "id",
+      english: "en",
+      javanese: "jv",
+      sundanese: "su",
+      acehnese: "ace",
+      balinese: "ban",
+      minangkabau: "min",
+    };
+    const locale = localeMap[languagePreference] ?? "id";
+    return getLocalizedChatModels(locale);
+  }, [languagePreference]);
+
+  const selectedModel = localizedModels.find(
     (model) => model.id === optimisticModelId
   );
 
   return (
     <PromptInputModelSelect
       onValueChange={(modelName) => {
-        const model = chatModels.find((m) => m.name === modelName);
+        const model = localizedModels.find((m) => m.name === modelName);
         if (model) {
           setOptimisticModelId(model.id);
           onModelChange?.(model.id);
@@ -596,7 +619,7 @@ function PureModelSelectorCompact({
       </Trigger>
       <PromptInputModelSelectContent className="min-w-[260px] p-0">
         <div className="flex flex-col gap-px">
-          {chatModels.map((model) => (
+          {localizedModels.map((model) => (
             <SelectItem key={model.id} value={model.name}>
               <div className="truncate font-medium text-xs">{model.name}</div>
               <div className="mt-px truncate text-[10px] text-muted-foreground leading-tight">

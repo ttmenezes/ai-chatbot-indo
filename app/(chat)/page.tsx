@@ -2,11 +2,38 @@ import { cookies } from "next/headers";
 import { Chat } from "@/components/chat";
 import { DataStreamHandler } from "@/components/data-stream-handler";
 import { DEFAULT_CHAT_MODEL } from "@/lib/ai/models";
+import type { SupportedLocale } from "@/lib/i18n";
 import { generateUUID } from "@/lib/utils";
 
-// Stateless: No authentication required
-export default async function Page() {
+const VALID_LOCALES: SupportedLocale[] = [
+  "id",
+  "en",
+  "jv",
+  "su",
+  "ace",
+  "ban",
+  "min",
+];
+
+function resolveLocale(
+  searchParams: Promise<{ lang?: string }>
+): SupportedLocale {
+  const params = searchParams instanceof Promise ? searchParams : Promise.resolve(searchParams);
+  const resolved = params as unknown as { lang?: string };
+  const lang = resolved.lang;
+
+  if (lang && VALID_LOCALES.includes(lang as SupportedLocale)) {
+    return lang as SupportedLocale;
+  }
+
+  return "id";
+}
+
+export default async function Page(props: {
+  searchParams: Promise<{ lang?: string }>;
+}) {
   const id = generateUUID();
+  const locale = resolveLocale(props.searchParams);
 
   const cookieStore = await cookies();
   const modelIdFromCookie = cookieStore.get("chat-model");
@@ -22,6 +49,7 @@ export default async function Page() {
           initialVisibilityType="private"
           isReadonly={false}
           key={id}
+          initialLocale={locale}
         />
         <DataStreamHandler />
       </>
@@ -38,6 +66,7 @@ export default async function Page() {
         initialVisibilityType="private"
         isReadonly={false}
         key={id}
+        initialLocale={locale}
       />
       <DataStreamHandler />
     </>

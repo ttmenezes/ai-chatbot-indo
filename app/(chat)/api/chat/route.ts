@@ -74,13 +74,6 @@ export async function POST(request: Request) {
 
     const model = myProvider.languageModel(modelId);
 
-    // Build tools object
-    const tools: Record<string, any> = {
-      getWeather,
-      google_search: google.tools.googleSearch({}),
-      url_context: google.tools.urlContext({}),
-    };
-
     // Detect explicit news or search requests to prioritise web tools
     const lastMessage = uiMessages.at(-1);
     const userMessageText = lastMessage
@@ -89,15 +82,48 @@ export async function POST(request: Request) {
           .map((part) => (part as { text?: string }).text || "")
           .join(" ") || ""
       : "";
-    const userRequestedNews =
-      userMessageText.toLowerCase().includes("news") ||
-      userMessageText.toLowerCase().includes("search") ||
-      Boolean(newsSearchEnabled) ||
-      Boolean(webSearchEnabled);
 
-    const activeTools = userRequestedNews
-      ? ["google_search", "url_context", "getWeather"]
-      : ["getWeather"];
+    // Check for explicit weather keywords to use weather-specific tools
+    const weatherKeywords = [
+      // English
+      "weather",
+      "temperature",
+      "forecast",
+      "rain",
+      "sunny",
+      "cloudy",
+      // Indonesian
+      "cuaca",
+      "suhu",
+      "hujan",
+      "cerah",
+      "mendung",
+      "prakiraan cuaca",
+    ];
+    const userRequestedWeather = weatherKeywords.some((keyword) =>
+      userMessageText.toLowerCase().includes(keyword)
+    );
+
+    // IMPORTANT: Cannot mix function tools with provider-defined tools!
+    // Strategy: Let the model decide when to search by always providing search tools.
+    // Only use getWeather for explicit weather queries.
+    let tools: Record<string, any>;
+
+    if (userRequestedWeather) {
+      // Weather-specific tools only
+      tools = {
+        getWeather,
+      };
+    } else {
+      // Default: Always provide search tools - let the model decide when to use them
+      // The model will autonomously determine if a query requires recent/grounded info
+      const googleSearchTool = google.tools.googleSearch({});
+      tools = {
+        google_search: googleSearchTool,
+        search: googleSearchTool, // Alias for models that call 'search' instead of 'google_search'
+        url_context: google.tools.urlContext({}),
+      };
+    }
 
     // Build system prompt
     const system = systemPrompt({
@@ -115,17 +141,21 @@ export async function POST(request: Request) {
       messages: convertToModelMessages(uiMessages),
       experimental_transform: smoothStream({ chunking: "word" }),
       tools,
-      activeTools,
+      maxSteps: 5, // Allow model to continue after tool calls
       experimental_telemetry: {
         isEnabled: isProductionEnvironment,
         functionId: "stream-text",
       },
       onChunk: ({ chunk }) => {
         // Log all chunk types to debug what we're receiving
+        console.log("📦 Chunk type:", chunk.type);
         if (
           chunk.type === "tool-result" ||
           chunk.type === "tool-input-start" ||
-          chunk.type === "tool-input-delta"
+          chunk.type === "tool-input-delta" ||
+          chunk.type === "tool-call-streaming-start" ||
+          chunk.type === "tool-call" ||
+          chunk.type === "finish"
         ) {
           console.log("🔍 Chunk received:", {
             type: chunk.type,
@@ -147,6 +177,24 @@ export async function POST(request: Request) {
             title: sourceChunk.title,
           });
         }
+        // Log text chunks
+        if (chunk.type === "text-delta") {
+          console.log("📝 Text delta:", (chunk as any).textDelta?.substring(0, 50));
+        }
+      },
+      onStepFinish: ({ response, text, toolCalls, toolResults, finishReason }) => {
+        console.log("🔄 Step finished:", {
+          finishReason,
+          hasText: Boolean(text?.trim()),
+          textPreview: text?.substring(0, 100),
+          toolCallsCount: toolCalls?.length ?? 0,
+          toolCalls: toolCalls?.map((tc) => ({
+            toolName: tc.toolName,
+            toolCallId: tc.toolCallId,
+          })),
+          toolResultsCount: toolResults?.length ?? 0,
+          responseMessagesCount: response?.messages?.length ?? 0,
+        });
       },
       onFinish: async ({ usage, response }) => {
         try {

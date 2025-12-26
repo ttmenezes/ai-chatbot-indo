@@ -13,9 +13,9 @@ export const entitlementsByUserType: Record<UserType, Entitlements> = {
   guest: {
     maxMessagesPerDay: 20,
     availableChatModelIds: [
-      "chat-model",
-      "chat-model-flash",
-      "chat-model-reasoning",
+      "chat-model", // Quick (Flash Lite)
+      // "chat-model-flash", // Disabled - doesn't work well with provider-defined tools
+      "chat-model-reasoning", // Deep (Flash Lite with reasoning)
     ],
   },
 
@@ -25,9 +25,9 @@ export const entitlementsByUserType: Record<UserType, Entitlements> = {
   regular: {
     maxMessagesPerDay: 100,
     availableChatModelIds: [
-      "chat-model",
-      "chat-model-flash",
-      "chat-model-reasoning",
+      "chat-model", // Quick (Flash Lite)
+      // "chat-model-flash", // Disabled - doesn't work well with provider-defined tools
+      "chat-model-reasoning", // Deep (Flash Lite with reasoning)
     ],
   },
 

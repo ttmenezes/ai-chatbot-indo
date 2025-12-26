@@ -43,9 +43,11 @@ export function VisibilitySelector({
   chatId,
   className,
   selectedVisibilityType,
+  showPublicOption = true,
 }: {
   chatId: string;
   selectedVisibilityType: VisibilityType;
+  showPublicOption?: boolean;
 } & React.ComponentProps<typeof Button>) {
   const [open, setOpen] = useState(false);
 
@@ -57,6 +59,10 @@ export function VisibilitySelector({
   const selectedVisibility = useMemo(
     () => visibilities.find((visibility) => visibility.id === visibilityType),
     [visibilityType]
+  );
+
+  const visibleVisibilities = visibilities.filter(
+    (visibility) => showPublicOption || visibility.id !== "public"
   );
 
   return (
@@ -80,7 +86,7 @@ export function VisibilitySelector({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="start" className="min-w-[300px]">
-        {visibilities.map((visibility) => (
+        {visibleVisibilities.map((visibility) => (
           <DropdownMenuItem
             className="group/item flex flex-row items-center justify-between gap-4"
             data-active={visibility.id === visibilityType}

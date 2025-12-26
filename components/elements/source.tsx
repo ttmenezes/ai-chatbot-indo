@@ -7,6 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useLocale } from "@/lib/locale-context";
 import { cn } from "@/lib/utils";
 
 export type SourcesProps = ComponentProps<"div">;
@@ -27,23 +28,29 @@ export const SourcesTrigger = ({
   count,
   children,
   ...props
-}: SourcesTriggerProps) => (
-  <CollapsibleTrigger
-    className={cn(
-      "inline-flex w-fit items-center gap-2 rounded-full border border-border bg-background px-3 py-1 font-medium text-xs transition-colors",
-      "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      className
-    )}
-    {...props}
-  >
-    {children ?? (
-      <>
-        <p className="font-medium">Sources ({count})</p>
-        <ChevronDownIcon className="size-4" />
-      </>
-    )}
-  </CollapsibleTrigger>
-);
+}: SourcesTriggerProps) => {
+  const { translator } = useLocale();
+
+  return (
+    <CollapsibleTrigger
+      className={cn(
+        "inline-flex w-fit items-center gap-2 rounded-full border border-border bg-background px-3 py-1 font-medium text-xs transition-colors",
+        "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        className
+      )}
+      {...props}
+    >
+      {children ?? (
+        <>
+          <p className="font-medium">
+            {translator("sources", { count: String(count) })}
+          </p>
+          <ChevronDownIcon className="size-4" />
+        </>
+      )}
+    </CollapsibleTrigger>
+  );
+};
 
 export type SourcesContentProps = ComponentProps<typeof CollapsibleContent>;
 
