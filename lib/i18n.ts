@@ -29,6 +29,14 @@ export type TranslationKeys = {
   aboutTitle: string;
   aboutDescription: string;
 
+  // About page
+  aboutPageTitle: string;
+  aboutPageParagraph1: string;
+  aboutPageParagraph2: string;
+  aboutPageParagraph3: string;
+  aboutPageStartChatting: string;
+  aboutLink: string;
+
   // Feedback
   feedbackTitle: string;
   feedbackDescription: string;
@@ -109,6 +117,16 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     aboutDescription:
       "BasaChat hadir untuk membawa kecerdasan buatan dan informasi kepada seluruh masyarakat Indonesia. Kami percaya bahwa teknologi AI harus dapat diakses oleh semua orang.",
 
+    aboutPageTitle: "Tentang BasaChat",
+    aboutPageParagraph1:
+      "BasaChat lahir dari visi sederhana namun berani: membawa kekuatan kecerdasan buatan dan akses informasi internet kepada seluruh masyarakat Indonesia. Kami percaya bahwa teknologi AI seharusnya tidak hanya menjadi hak istimewa segelintir orang, melainkan alat yang dapat memberdayakan setiap individu, dari kota besar hingga pelosok desa, untuk belajar, berkembang, dan terhubung dengan dunia.",
+    aboutPageParagraph2:
+      "Kami telah mengadaptasi model bahasa besar (LLM) modern untuk bekerja dengan bahasa-bahasa lokal Indonesia. BasaChat tidak hanya memahami Bahasa Indonesia, tetapi juga bahasa daerah seperti Jawa, Sunda, Aceh, Bali, dan Minangkabau. Dengan pendekatan ini, kami berharap dapat menjangkau lebih banyak masyarakat Indonesia yang mungkin lebih nyaman berkomunikasi dalam bahasa ibu mereka.",
+    aboutPageParagraph3:
+      "Ini baru permulaan. Kami terus bekerja untuk meningkatkan kemampuan BasaChat, menambah dukungan bahasa daerah lainnya, dan membuat teknologi AI semakin mudah diakses. Perjalanan kami menuju Indonesia yang lebih terhubung dan berdaya masih panjang, dan kami bersemangat untuk menempuhnya bersama Anda.",
+    aboutPageStartChatting: "Mulai Mengobrol",
+    aboutLink: "Tentang Kami",
+
     feedbackTitle: "Kirim Masukan",
     feedbackDescription:
       "Bantu kami meningkatkan layanan dengan membagikan pemikiran, saran, atau masalah Anda.",
@@ -182,6 +200,16 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     aboutDescription:
       "BasaChat is here to bring artificial intelligence and information to all people of Indonesia. We believe AI technology should be accessible to everyone.",
 
+    aboutPageTitle: "About BasaChat",
+    aboutPageParagraph1:
+      "BasaChat was born from a simple yet bold vision: to bring the power of artificial intelligence and internet information access to all people of Indonesia. We believe that AI technology should not be a privilege for the few, but a tool that can empower every individual—from major cities to remote villages—to learn, grow, and connect with the world.",
+    aboutPageParagraph2:
+      "We have adapted modern large language models (LLMs) to work with Indonesia's local languages. BasaChat not only understands Bahasa Indonesia, but also regional languages such as Javanese, Sundanese, Acehnese, Balinese, and Minangkabau. With this approach, we hope to reach more Indonesians who may feel more comfortable communicating in their mother tongue.",
+    aboutPageParagraph3:
+      "This is just the beginning. We continue to work on improving BasaChat's capabilities, adding support for more regional languages, and making AI technology increasingly accessible. Our journey toward a more connected and empowered Indonesia is long, and we are excited to walk it together with you.",
+    aboutPageStartChatting: "Start Chatting",
+    aboutLink: "About Us",
+
     feedbackTitle: "Send Feedback",
     feedbackDescription:
       "Help us improve by sharing your thoughts, suggestions, or issues.",
@@ -253,6 +281,16 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     aboutTitle: "Babagan BasaChat",
     aboutDescription:
       "BasaChat ana kanggo nggawa kecerdasan buatan lan informasi kanggo kabeh masyarakat Indonesia. Kita percaya teknologi AI kudu bisa diakses kabeh wong.",
+
+    aboutPageTitle: "Babagan BasaChat",
+    aboutPageParagraph1:
+      "BasaChat lair saka visi sing prasaja nanging wani: nggawa kekuatan kecerdasan buatan lan akses informasi internet kanggo kabeh masyarakat Indonesia. Kita percaya yen teknologi AI ora mung kudu dadi hak istimewa sawetara wong, nanging dadi piranti sing bisa nguatake saben individu—saka kutha gedhe nganti desa sing adoh—kanggo sinau, berkembang, lan nyambung karo donya.",
+    aboutPageParagraph2:
+      "Kita wis ngadaptasi model basa gedhe (LLM) modern supaya bisa kerja karo basa-basa lokal Indonesia. BasaChat ora mung ngerti Basa Indonesia, nanging uga basa dhaerah kayata Jawa, Sunda, Aceh, Bali, lan Minangkabau. Kanthi pendekatan iki, kita ngarep-arep bisa nggayuh luwih akeh wong Indonesia sing luwih nyaman komunikasi nganggo basa ibu.",
+    aboutPageParagraph3:
+      "Iki mung wiwitan. Kita terus kerja kanggo ningkatake kemampuan BasaChat, nambah dhukungan basa dhaerah liyane, lan nggawe teknologi AI saya gampang diakses. Perjalanan kita menyang Indonesia sing luwih nyambung lan kuwat isih dawa, lan kita semangat kanggo nglakoni bareng sampeyan.",
+    aboutPageStartChatting: "Mulai Ngobrol",
+    aboutLink: "Babagan Kita",
 
     feedbackTitle: "Kirim Saran",
     feedbackDescription:
@@ -327,6 +365,16 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     aboutDescription:
       "BasaChat aya pikeun mawa kecerdasan jieunan jeung informasi ka sadaya masarakat Indonesia. Urang percanten yén téknologi AI kedah tiasa diaksés ku sadayana.",
 
+    aboutPageTitle: "Ngeunaan BasaChat",
+    aboutPageParagraph1:
+      "BasaChat lahir tina visi basajan tapi wani: mawa kakuatan kecerdasan jieunan jeung aksés informasi internét ka sadaya masarakat Indonésia. Urang percanten yén téknologi AI teu kedah jadi hak istimewa sawaréh jalma, tapi alat anu tiasa nguatkeun unggal individu—ti kota gedé dugi ka désa nu jauh—pikeun diajar, mekar, jeung nyambung ka dunya.",
+    aboutPageParagraph2:
+      "Urang parantos ngadaptasi modél basa gedé (LLM) modérn pikeun tiasa jalan sareng basa-basa lokal Indonésia. BasaChat henteu ngan ukur ngarti Basa Indonésia, tapi ogé basa daérah sapertos Jawa, Sunda, Acéh, Bali, sareng Minangkabau. Ku pendekatan ieu, urang miharep tiasa ngahontal langkung seueur urang Indonésia anu langkung nyaman komunikasi dina basa indung.",
+    aboutPageParagraph3:
+      "Ieu ngan ukur awalan. Urang terus damel pikeun ningkatkeun kamampuan BasaChat, nambihan dukungan basa daérah sanésna, sareng ngajantenkeun téknologi AI beuki gampang diaksés. Perjalanan urang ka arah Indonésia anu langkung nyambung sareng kuat masih panjang, sareng urang sumanget pikeun ngalakukeunana babarengan sareng anjeun.",
+    aboutPageStartChatting: "Mimitian Ngobrol",
+    aboutLink: "Ngeunaan Urang",
+
     feedbackTitle: "Kirim Saran",
     feedbackDescription:
       "Bantuan urang ningkatkeun layanan ku ngabagikeun pamikiran, saran, atanapi masalah anjeun.",
@@ -399,6 +447,16 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     aboutTitle: "Keu BasaChat",
     aboutDescription:
       "BasaChat na keu meuwariskan kecerdasan buatan dan informasi keu ban mandum masyarakat Indonesia. Kamoe yakin teknologi AI harus jeut diakses le bandum ureueng.",
+
+    aboutPageTitle: "Keu BasaChat",
+    aboutPageParagraph1:
+      "BasaChat lahé nibak visi sederhana tapi berani: meuwariskan kekuatan kecerdasan buatan dan akses informasi internet keu ban mandum masyarakat Indonesia. Kamoe yakin teknologi AI hana jeuet cuma jadi hak istimewa sigöt-göt ureueng, tapi jadi alat nyang jeut peuteukôn tiep individu—nibak kuta rayeuk sampoe desa nyang jiôh—keu meunurot ilmoe, meukeutamah, dan meusambông ngon donya.",
+    aboutPageParagraph2:
+      "Kamoe ka meuadaptasi model bahasa rayeuk (LLM) modern mangat jeut meukureuja ngon bahasa-bahasa lokal Indonesia. BasaChat hana cuma meuphôm Bahasa Indonesia, tapi cit bahasa daerah lagèe Jawa, Sunda, Acèh, Bali, dan Minangkabau. Ngon pendekatan nyoe, kamoe harap jeut meugapai lé jai ureueng Indonesia nyang lé nyaman meukomunikasi ngon bahasa indông.",
+    aboutPageParagraph3:
+      "Nyoe cuma peumulaan. Kamoe terus meukureuja keu peutingkat kemampuan BasaChat, peutamah dukungan bahasa daerah laén, dan peujeuet teknologi AI semakin mudah diakses. Perjalanan kamoe keu Indonesia nyang lé meusambông dan teukôn masih panyang, dan kamoe semangat keu jalang sajan ngon gata.",
+    aboutPageStartChatting: "Mulai Peugah",
+    aboutLink: "Keu Kamoe",
 
     feedbackTitle: "Kirem Saran",
     feedbackDescription:
@@ -473,6 +531,16 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     aboutDescription:
       "BasaChat wenten anggen ngaba kecerdasan buatan lan informasi ring makejang masyarakat Indonesia. Tiang pracaya teknologi AI patut dados kaakses olih makejang anak.",
 
+    aboutPageTitle: "Indik BasaChat",
+    aboutPageParagraph1:
+      "BasaChat embas saking visi sederhana nanging wanen: ngaba kakuatan kecerdasan buatan lan akses informasi internet ring makejang masyarakat Indonesia. Tiang pracaya yéning téknologi AI tan patut dados hak istimewa anak akidik, nanging dados piranti sané prasida nguatang nyabran individu—saking kota gedé kantos désa sané doh—anggen malajah, berkembang, lan masambungan ring jagaté.",
+    aboutPageParagraph2:
+      "Tiang sampun ngadaptasi modél basa gedé (LLM) modérn mangda prasida makarya sareng basa-basa lokal Indonésia. BasaChat nénten wantah ngresep Basa Indonésia, nanging taler basa daérah sakadi Jawi, Sunda, Acéh, Bali, lan Minangkabau. Antuk pendekatan puniki, tiang mapangapti prasida ngaksi langkungan akéh anak Indonésia sané langkungan nyaman makomunikasi ring basa rerama.",
+    aboutPageParagraph3:
+      "Puniki wantah purwaka. Tiang terus makarya anggen nincapang kamampuan BasaChat, nambahang dukungan basa daérah lianan, lan ngaénang téknologi AI sayan aluh kaakses. Pamargin tiang nuju Indonésia sané langkungan masambungan lan tegteg kantun dawa, lan tiang semangat anggen nglaksanayang sareng-sareng ring Ragané.",
+    aboutPageStartChatting: "Ngawitin Mabebaosan",
+    aboutLink: "Indik Tiang",
+
     feedbackTitle: "Kirim Saran",
     feedbackDescription:
       "Tulung tiang nincapang layanan antuk ngicen pepikian, saran, utawi masalah ragane.",
@@ -545,6 +613,16 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     aboutTitle: "Tantang BasaChat",
     aboutDescription:
       "BasaChat ado untuak mambao kecerdasan buatan jo informasi kapado sadonyo masyarakat Indonesia. Kami paracayo taknologi AI harus dapek diakses dek sadonyo urang.",
+
+    aboutPageTitle: "Tantang BasaChat",
+    aboutPageParagraph1:
+      "BasaChat lahia dari visi nan saderhana tapi barani: mambao kakuatan kecerdasan buatan jo akses informasi internet kapado sadonyo masyarakat Indonésia. Kami paracayo taknologi AI indak sajo musti jadi hak istimewa sakaliak urang, tapi jadi alaik nan dapek manguatkan tiok individu—dari kota gadang sampai desa nan jauah—untuak balajar, bakambang, jo tasambung jo dunia.",
+    aboutPageParagraph2:
+      "Kami lah mangadaptasi modél bahaso gadang (LLM) modérn supayo dapek bakarajo jo bahaso-bahaso lokal Indonésia. BasaChat indak hanyo mangarati Bahaso Indonésia, tapi juo bahaso daerah sarupo Jawa, Sunda, Acéh, Bali, jo Minangkabau. Jo pendekatan ko, kami baharok dapek manggapai labiah banyak urang Indonésia nan labiah nyaman bakomunikasi jo bahaso induak.",
+    aboutPageParagraph3:
+      "Ko baru pamulaan. Kami taruih bakarajo untuak maningkekan kamampuan BasaChat, manambah dukungan bahaso daerah lain, jo mambuek taknologi AI semakin mudah diakses. Parjalanan kami ka Indonésia nan labiah tasambung jo kuaik masih panjang, jo kami samangaik untuak manjalanih basamo jo awak.",
+    aboutPageStartChatting: "Mulai Bakecek",
+    aboutLink: "Tantang Kami",
 
     feedbackTitle: "Kirim Saran",
     feedbackDescription:

@@ -77,6 +77,22 @@ const LOCALE_TO_LANGUAGE: Record<string, string> = {
   min: "minangkabau",
 };
 
+// Map English language names to Indonesian/native language names for display
+const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
+  indonesian: "Bahasa Indonesia",
+  english: "English",
+  javanese: "Basa Jawa",
+  sundanese: "Basa Sunda",
+  acehnese: "Basa Acèh",
+  balinese: "Basa Bali",
+  minangkabau: "Baso Minang",
+  banjarese: "Basa Banjar",
+  madurese: "Bhâsa Madhurâ",
+  ngaju: "Bahasa Ngaju",
+  buginese: "Basa Ugi",
+  toba_batak: "Hata Batak Toba",
+};
+
 const normalizeLanguagePreference = (value: string) => {
   // First check if it's a locale code that needs mapping
   const mapped = LOCALE_TO_LANGUAGE[value];
@@ -87,11 +103,16 @@ const normalizeLanguagePreference = (value: string) => {
   return LANGUAGE_OPTION_VALUES.has(value) ? value : "auto";
 };
 
+const formatLanguageLabel = (language: string): string => {
+  // Use native language name if available, otherwise fall back to formatted English name
+  return LANGUAGE_DISPLAY_NAMES[language] ?? formatPromptLanguage(language);
+};
+
 const getLanguageOptions = (t: ReturnType<typeof createTranslator>) => [
   { value: "auto", label: t("autoDetect") },
   ...UNIQUE_PROMPT_LANGUAGES.map((language) => ({
     value: language,
-    label: formatPromptLanguage(language),
+    label: formatLanguageLabel(language),
   })),
 ];
 

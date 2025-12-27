@@ -7,9 +7,42 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://chat.vercel.ai"),
-  title: "Next.js Chatbot Template",
-  description: "Next.js chatbot template using the AI SDK.",
+  metadataBase: new URL("https://basachat.com"),
+  title: {
+    default: "BasaChat - AI untuk Semua Indonesia",
+    template: "%s | BasaChat",
+  },
+  description:
+    "BasaChat membawa kecerdasan buatan kepada seluruh masyarakat Indonesia. Mendukung Bahasa Indonesia dan bahasa daerah seperti Jawa, Sunda, Aceh, Bali, dan Minangkabau.",
+  keywords: [
+    "AI Indonesia",
+    "chatbot Indonesia",
+    "bahasa daerah",
+    "Basa Jawa",
+    "Basa Sunda",
+    "kecerdasan buatan",
+    "BasaChat",
+  ],
+  authors: [{ name: "BasaChat Team" }],
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    url: "https://basachat.com",
+    siteName: "BasaChat",
+    title: "BasaChat - AI untuk Semua Indonesia",
+    description:
+      "BasaChat membawa kecerdasan buatan kepada seluruh masyarakat Indonesia. Mendukung Bahasa Indonesia dan bahasa daerah.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BasaChat - AI untuk Semua Indonesia",
+    description:
+      "BasaChat membawa kecerdasan buatan kepada seluruh masyarakat Indonesia.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export const viewport = {
