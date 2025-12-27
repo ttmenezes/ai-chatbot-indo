@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+// biome-ignore lint/performance/noNamespaceImport: will use this import
+import * as React from "react";
 import { RestartIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Sidebar,
   SidebarFooter,
@@ -23,6 +26,55 @@ export function AppSidebar({ locale = "id" }: AppSidebarProps) {
   const t = getTranslations(locale);
   const router = useRouter();
   const { setOpenMobile } = useSidebar();
+  const [feedback, setFeedback] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
+
+  const handleFeedbackSubmit = async () => {
+    if (!feedback.trim()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim() || undefined,
+          feedbackText: feedback.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit feedback");
+      }
+
+      setIsSubmitted(true);
+      setFeedback("");
+      setEmail("");
+
+      // Reset submitted state after a delay
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      // Still show success to user, but log error
+      setIsSubmitted(true);
+      setFeedback("");
+      setEmail("");
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 2000);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <Sidebar className="group-data-[side=left]:border-r-0">
@@ -81,13 +133,44 @@ export function AppSidebar({ locale = "id" }: AppSidebarProps) {
         {/* Feedback Section */}
         <div className="rounded-lg border p-3">
           <p className="mb-2 font-medium text-sm">{t.feedbackInputTitle}</p>
-          <Textarea
-            className="min-h-[80px] resize-none text-xs"
-            placeholder={t.feedbackPlaceholder}
-          />
-          <Button className="mt-2 w-full text-xs" size="sm">
-            {t.feedbackSubmit}
-          </Button>
+          {isSubmitted ? (
+            <div className="py-2 text-center">
+              <p className="font-medium text-green-600 text-xs">
+                {t.feedbackThankYou}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-2">
+                <Input
+                  className="h-8 text-xs"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEmail(e.target.value)
+                  }
+                  placeholder={t.feedbackEmailPlaceholder}
+                  type="email"
+                  value={email}
+                />
+                <Textarea
+                  className="min-h-[80px] resize-none text-xs"
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setFeedback(e.target.value)
+                  }
+                  placeholder={t.feedbackPlaceholder}
+                  value={feedback}
+                />
+              </div>
+              <Button
+                className="mt-2 w-full text-xs"
+                disabled={!feedback.trim() || isSubmitting}
+                onClick={handleFeedbackSubmit}
+                size="sm"
+                type="button"
+              >
+                {isSubmitting ? t.feedbackSending : t.feedbackSubmit}
+              </Button>
+            </>
+          )}
         </div>
       </SidebarFooter>
     </Sidebar>

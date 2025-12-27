@@ -16,11 +16,10 @@ const VALID_LOCALES: SupportedLocale[] = [
   "min",
 ];
 
-function resolveLocale(
+async function resolveLocale(
   searchParams: Promise<{ lang?: string }>
-): SupportedLocale {
-  const params = searchParams instanceof Promise ? searchParams : Promise.resolve(searchParams);
-  const resolved = params as unknown as { lang?: string };
+): Promise<SupportedLocale> {
+  const resolved = await searchParams;
   const lang = resolved.lang;
 
   if (lang && VALID_LOCALES.includes(lang as SupportedLocale)) {
@@ -36,7 +35,7 @@ export default async function Page(props: {
 }) {
   const params = await props.params;
   const { id } = params;
-  const locale = resolveLocale(props.searchParams);
+  const locale = await resolveLocale(props.searchParams);
 
   const cookieStore = await cookies();
   const chatModelFromCookie = cookieStore.get("chat-model");

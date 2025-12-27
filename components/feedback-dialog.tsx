@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getTranslations, type SupportedLocale } from "@/lib/i18n";
 
@@ -25,6 +26,7 @@ type FeedbackDialogProps = {
 export function FeedbackDialog({ locale = "id" }: FeedbackDialogProps) {
   const t = getTranslations(locale);
   const [feedback, setFeedback] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
@@ -36,21 +38,44 @@ export function FeedbackDialog({ locale = "id" }: FeedbackDialogProps) {
 
     setIsSubmitting(true);
 
-    // Simulate API call - in production, replace with actual feedback submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim() || undefined,
+          feedbackText: feedback.trim(),
+        }),
+      });
 
-    // Log feedback to console for now
-    console.log("Feedback submitted:", feedback);
+      if (!response.ok) {
+        throw new Error("Failed to submit feedback");
+      }
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+      setIsSubmitted(true);
 
-    // Close dialog after a short delay
-    setTimeout(() => {
-      setIsOpen(false);
-      setFeedback("");
-      setIsSubmitted(false);
-    }, 1500);
+      // Close dialog after a short delay
+      setTimeout(() => {
+        setIsOpen(false);
+        setFeedback("");
+        setEmail("");
+        setIsSubmitted(false);
+      }, 1500);
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      // Still show success to user, but log error
+      setIsSubmitted(true);
+      setTimeout(() => {
+        setIsOpen(false);
+        setFeedback("");
+        setEmail("");
+        setIsSubmitted(false);
+      }, 1500);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -62,8 +87,7 @@ export function FeedbackDialog({ locale = "id" }: FeedbackDialogProps) {
           variant="outline"
         >
           <MessageIcon />
-          {t.feedbackButton}
-          <span className="md:sr-only">{t.feedbackButton}</span>
+          <span className="hidden md:inline">{t.feedbackButton}</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -85,18 +109,32 @@ export function FeedbackDialog({ locale = "id" }: FeedbackDialogProps) {
           </div>
         ) : (
           <>
-            <Textarea
-              className="min-h-[120px] resize-none"
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder={t.feedbackPlaceholder}
-              value={feedback}
-            />
+            <div className="space-y-4">
+              <div>
+                <Input
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEmail(e.target.value)
+                  }
+                  placeholder={t.feedbackEmailPlaceholder}
+                  type="email"
+                  value={email}
+                />
+              </div>
+              <Textarea
+                className="min-h-[120px] resize-none"
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setFeedback(e.target.value)
+                }
+                placeholder={t.feedbackPlaceholder}
+                value={feedback}
+              />
+            </div>
 
             <AlertDialogFooter>
               <AlertDialogCancel>{t.feedbackCancel}</AlertDialogCancel>
               <AlertDialogAction
                 disabled={!feedback.trim() || isSubmitting}
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   handleSubmit();
                 }}

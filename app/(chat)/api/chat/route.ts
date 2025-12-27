@@ -16,6 +16,7 @@ import { myProvider } from "@/lib/ai/providers";
 import { getWeather } from "@/lib/ai/tools/get-weather";
 import { isProductionEnvironment } from "@/lib/constants";
 import { ChatSDKError } from "@/lib/errors";
+import { upsertChatLog } from "@/lib/supabase";
 import type { ChatMessage } from "@/lib/types";
 
 export const maxDuration = 60;
@@ -47,12 +48,14 @@ export async function POST(request: Request) {
       webSearchEnabled,
       newsSearchEnabled,
       languagePreference,
+      chatId,
     }: {
       messages: UIMessage[];
       selectedChatModel?: ChatModel["id"];
       webSearchEnabled?: boolean;
       newsSearchEnabled?: boolean;
       languagePreference?: string;
+      chatId?: string;
     } = json;
 
     if (!messages || !Array.isArray(messages)) {
@@ -145,105 +148,41 @@ export async function POST(request: Request) {
         isEnabled: isProductionEnvironment,
         functionId: "stream-text",
       },
-      onChunk: ({ chunk }) => {
-        // Log all chunk types to debug what we're receiving
-        console.log("📦 Chunk type:", chunk.type);
-        if (chunk.type === "tool-result" || chunk.type === "tool-call") {
-          console.log("🔍 Chunk received:", {
-            type: chunk.type,
-            chunk: JSON.stringify(chunk, null, 2),
-          });
-        }
-        // Check for source chunks (from Gemini grounding)
-        if (chunk.type === "source") {
-          const sourceChunk = chunk as {
-            type: "source";
-            sourceType?: string;
-            id?: string;
-            url?: string;
-            title?: string;
-          };
-          console.log("🌐 Source chunk from Gemini grounding:", {
-            sourceType: sourceChunk.sourceType,
-            url: sourceChunk.url,
-            title: sourceChunk.title,
-          });
-        }
-        // Log text chunks
-        if (chunk.type === "text-delta") {
-          console.log(
-            "📝 Text delta:",
-            (chunk as any).textDelta?.substring(0, 50)
-          );
-        }
+      onChunk: () => {
+        // Chunk processing (no logging needed)
       },
-      onStepFinish: ({
-        response,
-        text,
-        toolCalls,
-        toolResults,
-        finishReason,
-      }) => {
-        console.log("🔄 Step finished:", {
-          finishReason,
-          hasText: Boolean(text?.trim()),
-          textPreview: text?.substring(0, 100),
-          toolCallsCount: toolCalls?.length ?? 0,
-          toolCalls: toolCalls?.map((tc) => ({
-            toolName: tc.toolName,
-            toolCallId: tc.toolCallId,
-          })),
-          toolResultsCount: toolResults?.length ?? 0,
-          responseMessagesCount: response?.messages?.length ?? 0,
-        });
+      onStepFinish: () => {
+        // Step finished (no logging needed)
       },
-      onFinish: async ({ usage, response }) => {
+      onFinish: async ({ usage }) => {
         try {
-          // Check response.messages for tool calls and grounding metadata
-          for (const message of response.messages) {
-            // Check for provider metadata (where Gemini grounding sources are)
-            const messageWithMetadata = message as {
-              experimental_providerMetadata?: {
-                google?: {
-                  groundingMetadata?: {
-                    groundingChunks?: Array<{
-                      web?: {
-                        uri?: string | null;
-                        title?: string | null;
-                      } | null;
-                    }>;
-                  };
-                };
-              };
-            };
-            const googleMetadata =
-              messageWithMetadata.experimental_providerMetadata?.google;
-            if (googleMetadata?.groundingMetadata?.groundingChunks) {
-              const sources = googleMetadata.groundingMetadata.groundingChunks
-                .map((chunk) => chunk.web?.uri)
-                .filter((uri): uri is string => Boolean(uri));
-              console.log("🌐 Found Gemini grounding sources:", sources);
-            }
-          }
           const providers = await getTokenlensCatalog();
           const modelIdString = myProvider.languageModel(modelId).modelId;
           if (!modelIdString || !providers) {
             return;
           }
 
-          const summary = getUsage({
+          // Usage tracking (no logging needed)
+          getUsage({
             modelId: modelIdString,
             usage,
             providers,
           });
-          // Usage tracking can be logged but not persisted in stateless app
-          console.log("Token usage:", {
-            ...usage,
-            ...summary,
-            modelId: modelIdString,
-          });
         } catch (err) {
           console.warn("TokenLens enrichment failed", err);
+        }
+
+        // Fire-and-forget: Log chat transcript to Supabase
+        // Don't await - let it run in the background
+        if (chatId && uiMessages.length > 0) {
+          upsertChatLog({
+            id: chatId,
+            messages: uiMessages,
+            locale: languagePreference,
+          }).catch((error) => {
+            // Silently fail - logging is non-critical
+            console.warn("Failed to log chat transcript:", error);
+          });
         }
       },
     });

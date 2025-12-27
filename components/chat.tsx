@@ -112,6 +112,7 @@ export function Chat({
             webSearchEnabled,
             newsSearchEnabled,
             languagePreference,
+            chatId: id,
             ...request.body,
           },
         };
@@ -212,6 +213,7 @@ export function Chat({
             <MultimodalInput
               attachments={attachments}
               chatId={id}
+              initialLocale={initialLocale}
               input={input}
               messages={messages}
               onModelChange={setCurrentModelId}

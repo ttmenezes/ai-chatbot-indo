@@ -33,6 +33,7 @@ export type TranslationKeys = {
   feedbackTitle: string;
   feedbackDescription: string;
   feedbackPlaceholder: string;
+  feedbackEmailPlaceholder: string;
   feedbackSubmit: string;
   feedbackSending: string;
   feedbackThankYou: string;
@@ -112,6 +113,7 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     feedbackDescription:
       "Bantu kami meningkatkan layanan dengan membagikan pemikiran, saran, atau masalah Anda.",
     feedbackPlaceholder: "Tulis masukan atau saran Anda...",
+    feedbackEmailPlaceholder: "Email (opsional)",
     feedbackSubmit: "Kirim Masukan",
     feedbackSending: "Mengirim...",
     feedbackThankYou: "Terima kasih atas masukan Anda!",
@@ -184,6 +186,7 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     feedbackDescription:
       "Help us improve by sharing your thoughts, suggestions, or issues.",
     feedbackPlaceholder: "Tell us what you think...",
+    feedbackEmailPlaceholder: "Email (optional)",
     feedbackSubmit: "Send Feedback",
     feedbackSending: "Sending...",
     feedbackThankYou: "Thank you for your feedback!",
@@ -255,6 +258,7 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     feedbackDescription:
       "Tulung kita nambah layanan kanthi nuduhake pikiran, saran, utawa masalah sampeyan.",
     feedbackPlaceholder: "Tulis saran utawa panemumu...",
+    feedbackEmailPlaceholder: "Email (opsional)",
     feedbackSubmit: "Kirim Saran",
     feedbackSending: "Ngirim...",
     feedbackThankYou: "Matur nuwun kanggo masukanmu!",
@@ -327,6 +331,7 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     feedbackDescription:
       "Bantuan urang ningkatkeun layanan ku ngabagikeun pamikiran, saran, atanapi masalah anjeun.",
     feedbackPlaceholder: "Tulis saran atawa pamikiran anjeun...",
+    feedbackEmailPlaceholder: "Email (opsional)",
     feedbackSubmit: "Kirim Saran",
     feedbackSending: "Ngirim...",
     feedbackThankYou: "Hatur nuhun kana masukan anjeun!",
@@ -399,6 +404,7 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     feedbackDescription:
       "Tulong kamoe meuningkat layanan ngon meuwariskan pikiran, saran, atawa masalah gata.",
     feedbackPlaceholder: "Tuleh saran atawa pikiran gata...",
+    feedbackEmailPlaceholder: "Email (opsional)",
     feedbackSubmit: "Kirem Saran",
     feedbackSending: "Lam kirem...",
     feedbackThankYou: "Terimong geunaseh keu saran gata!",
@@ -471,6 +477,7 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     feedbackDescription:
       "Tulung tiang nincapang layanan antuk ngicen pepikian, saran, utawi masalah ragane.",
     feedbackPlaceholder: "Tulis saran utawi pepikian ragane...",
+    feedbackEmailPlaceholder: "Email (opsional)",
     feedbackSubmit: "Kirim Saran",
     feedbackSending: "Ngirim...",
     feedbackThankYou: "Suksma antuk masukan ragane!",
@@ -543,6 +550,7 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     feedbackDescription:
       "Tolong kami maningkekan layanan jo mambagi pikiran, saran, atau masalah awak.",
     feedbackPlaceholder: "Tulis saran atau pikiran awak...",
+    feedbackEmailPlaceholder: "Email (opsional)",
     feedbackSubmit: "Kirim Saran",
     feedbackSending: "Mangirim...",
     feedbackThankYou: "Tarimo kasih untuak masukan awak!",

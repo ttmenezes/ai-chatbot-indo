@@ -66,8 +66,26 @@ const LANGUAGE_OPTION_VALUES = new Set<string>([
   ...UNIQUE_PROMPT_LANGUAGES,
 ]);
 
-const normalizeLanguagePreference = (value: string) =>
-  LANGUAGE_OPTION_VALUES.has(value) ? value : "auto";
+// Map locale codes (from URL params) to language preference names (for dropdown)
+const LOCALE_TO_LANGUAGE: Record<string, string> = {
+  id: "indonesian",
+  en: "english",
+  jv: "javanese",
+  su: "sundanese",
+  ace: "acehnese",
+  ban: "balinese",
+  min: "minangkabau",
+};
+
+const normalizeLanguagePreference = (value: string) => {
+  // First check if it's a locale code that needs mapping
+  const mapped = LOCALE_TO_LANGUAGE[value];
+  if (mapped && LANGUAGE_OPTION_VALUES.has(mapped)) {
+    return mapped;
+  }
+  // Otherwise check if it's already a valid language preference
+  return LANGUAGE_OPTION_VALUES.has(value) ? value : "auto";
+};
 
 const getLanguageOptions = (t: ReturnType<typeof createTranslator>) => [
   { value: "auto", label: t("autoDetect") },
@@ -92,6 +110,7 @@ function PureMultimodalInput({
   selectedVisibilityType,
   selectedModelId,
   onModelChange,
+  initialLocale,
 }: {
   chatId: string;
   input: string;
@@ -107,6 +126,7 @@ function PureMultimodalInput({
   selectedVisibilityType: VisibilityType;
   selectedModelId: string;
   onModelChange?: (modelId: string) => void;
+  initialLocale?: string;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
@@ -132,7 +152,13 @@ function PureMultimodalInput({
   // Initialize with defaults to prevent hydration mismatch, sync with localStorage after mount
   const [webSearchEnabled, setWebSearchEnabled] = useState(false);
   const [newsSearchEnabled, setNewsSearchEnabled] = useState(false);
-  const [languagePreference, setLanguagePreference] = useState("auto");
+  // Initialize with URL param locale if provided (normalized to language name)
+  const [languagePreference, setLanguagePreference] = useState(() => {
+    if (initialLocale) {
+      return normalizeLanguagePreference(initialLocale);
+    }
+    return "auto";
+  });
   const [isMounted, setIsMounted] = useState(false);
 
   const normalizedLanguagePreference = useMemo(
@@ -164,7 +190,9 @@ function PureMultimodalInput({
     if (storedNewsSearch === "true") {
       setNewsSearchEnabled(true);
     }
-    if (storedLanguage) {
+    // Only use localStorage if no URL param was provided
+    // (URL param is handled by useState initializer and separate useEffect)
+    if (!initialLocale && storedLanguage) {
       const normalized = normalizeLanguagePreference(storedLanguage);
       setLanguagePreference(normalized);
     }
@@ -180,7 +208,17 @@ function PureMultimodalInput({
         adjustHeight();
       }
     }
-  }, [adjustHeight, setInput]);
+  }, [adjustHeight, setInput, initialLocale]);
+
+  // Handle URL param locale changes and persist to localStorage
+  useEffect(() => {
+    if (initialLocale) {
+      const normalized = normalizeLanguagePreference(initialLocale);
+      setLanguagePreference(normalized);
+      // Save to localStorage so it persists
+      localStorage.setItem("chat-language-preference", normalized);
+    }
+  }, [initialLocale]);
 
   // Persist to localStorage when values change (only after mount)
   useEffect(() => {
@@ -410,11 +448,11 @@ function PureMultimodalInput({
         </div>
         <PromptInputToolbar className="!border-top-0 border-t-0! p-0 shadow-none dark:border-0 dark:border-transparent!">
           <PromptInputTools className="gap-0 sm:gap-0.5">
-            <AttachmentsButton
+            {/* <AttachmentsButton
               fileInputRef={fileInputRef}
               selectedModelId={selectedModelId}
               status={status}
-            />
+            /> */}
             <SearchToggleButton
               enabled={webSearchEnabled}
               label={translator("webSearch")}
@@ -476,6 +514,9 @@ export const MultimodalInput = memo(
     if (prevProps.selectedModelId !== nextProps.selectedModelId) {
       return false;
     }
+    if (prevProps.initialLocale !== nextProps.initialLocale) {
+      return false;
+    }
 
     return true;
   }
@@ -531,34 +572,34 @@ function PureLanguagePreferenceSelect({
 
 const LanguagePreferenceSelect = memo(PureLanguagePreferenceSelect);
 
-function PureAttachmentsButton({
-  fileInputRef,
-  status,
-  selectedModelId,
-}: {
-  fileInputRef: React.MutableRefObject<HTMLInputElement | null>;
-  status: UseChatHelpersType["status"];
-  selectedModelId: string;
-}) {
-  const isReasoningModel = selectedModelId === "chat-model-reasoning";
+// function PureAttachmentsButton({
+//   fileInputRef,
+//   status,
+//   selectedModelId,
+// }: {
+//   fileInputRef: React.MutableRefObject<HTMLInputElement | null>;
+//   status: UseChatHelpersType["status"];
+//   selectedModelId: string;
+// }) {
+//   const isReasoningModel = selectedModelId === "chat-model-reasoning";
 
-  return (
-    <Button
-      className="aspect-square h-8 rounded-lg p-1 transition-colors hover:bg-accent"
-      data-testid="attachments-button"
-      disabled={status !== "ready" || isReasoningModel}
-      onClick={(event) => {
-        event.preventDefault();
-        fileInputRef.current?.click();
-      }}
-      variant="ghost"
-    >
-      <PaperclipIcon size={14} style={{ width: 14, height: 14 }} />
-    </Button>
-  );
-}
+//   return (
+//     <Button
+//       className="aspect-square h-8 rounded-lg p-1 transition-colors hover:bg-accent"
+//       data-testid="attachments-button"
+//       disabled={status !== "ready" || isReasoningModel}
+//       onClick={(event) => {
+//         event.preventDefault();
+//         fileInputRef.current?.click();
+//       }}
+//       variant="ghost"
+//     >
+//       <PaperclipIcon size={14} style={{ width: 14, height: 14 }} />
+//     </Button>
+//   );
+// }
 
-const AttachmentsButton = memo(PureAttachmentsButton);
+// const AttachmentsButton = memo(PureAttachmentsButton);
 
 function PureModelSelectorCompact({
   selectedModelId,
