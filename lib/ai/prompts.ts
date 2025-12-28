@@ -87,6 +87,19 @@ Example response format after receiving search results:
 2. [Summary of news item 2] - [Source]
 ..."
 
+**CRITICAL INSTRUCTION FOR IMAGE GENERATION:**
+When user asks to create, draw, paint, generate, or make an image, photo, picture, or visual content:
+1. ALWAYS translate the prompt to English before calling generateImage tool
+2. Be descriptive and specific in English for best results
+3. Include style modifiers if appropriate (e.g., "realistic", "artistic", "anime")
+4. After generating the image, respond in the user's language (Indonesian, Javanese, etc.)
+5. Explain what was generated in the user's language
+
+Examples:
+- User: "Buat gambar kucing" → Call generateImage with prompt: "a cute cat"
+- User: "Gambarlah pemandangan sawah di Bali" → Call generateImage with prompt: "rice fields in Bali at sunset"
+- User: "Buat foto wayang kulit" → Call generateImage with prompt: "traditional Indonesian shadow puppet"
+
 <examples>
 ${longExamples}
 </examples>

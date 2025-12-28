@@ -14,6 +14,7 @@
     "@ai-sdk/google": "^2.0.51",
     "@ai-sdk/provider": "2.0.0",
     "@ai-sdk/react": "2.0.82",
+    "@ai-sdk/replicate": "^2.0.1",
     "@codemirror/lang-javascript": "^6.2.2",
     "@codemirror/lang-python": "^6.1.6",
     "@codemirror/state": "^6.5.0",

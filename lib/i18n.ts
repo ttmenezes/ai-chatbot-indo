@@ -85,6 +85,11 @@ export type TranslationKeys = {
   toolError: string;
   toolParameters: string;
   toolResult: string;
+  checkingWeather: string;
+  generatingImage: string;
+  generatedImage: string;
+  download: string;
+  createImage: string;
 
   // Message actions
   copyToClipboard: string;
@@ -171,6 +176,11 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     toolError: "Error",
     toolParameters: "Parameter",
     toolResult: "Hasil",
+    checkingWeather: "Memeriksa cuaca...",
+    generatingImage: "Membuat gambar...",
+    generatedImage: "Gambar Hasil",
+    download: "Unduh",
+    createImage: "Buat Gambar",
 
     copyToClipboard: "Salin",
     copiedToClipboard: "Disalin ke clipboard!",
@@ -253,6 +263,11 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     toolError: "Error",
     toolParameters: "Parameters",
     toolResult: "Result",
+    checkingWeather: "Checking weather...",
+    generatingImage: "Generating image...",
+    generatedImage: "Generated Image",
+    download: "Download",
+    createImage: "Create Image",
 
     copyToClipboard: "Copy",
     copiedToClipboard: "Copied to clipboard!",
@@ -336,6 +351,11 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     toolError: "Error",
     toolParameters: "Parameter",
     toolResult: "Asil",
+    checkingWeather: "Lagi ngecek cuaca...",
+    generatingImage: "Lagi nggawe gambar...",
+    generatedImage: "Gambar Asil",
+    download: "Unduh",
+    createImage: "Gawe Gambar",
 
     copyToClipboard: "Salin",
     copiedToClipboard: "Wis disalin!",
@@ -419,6 +439,11 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     toolError: "Error",
     toolParameters: "Parameter",
     toolResult: "Hasil",
+    checkingWeather: "Keur mariksa cuaca...",
+    generatingImage: "Keur nyieun gambar...",
+    generatedImage: "Gambar Hasil",
+    download: "Undeur",
+    createImage: "Jieun Gambar",
 
     copyToClipboard: "Salin",
     copiedToClipboard: "Tos disalin!",
@@ -502,6 +527,11 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     toolError: "Error",
     toolParameters: "Parameter",
     toolResult: "Hase",
+    checkingWeather: "Lam cèk cuaca...",
+    generatingImage: "Lam peugöt gambar...",
+    generatedImage: "Gambar Hase",
+    download: "Unduh",
+    createImage: "Buet Gambar",
 
     copyToClipboard: "Salin",
     copiedToClipboard: "Ka tersalin!",
@@ -585,6 +615,11 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     toolError: "Error",
     toolParameters: "Parameter",
     toolResult: "Pikolih",
+    checkingWeather: "Sedek ngecek cuaca...",
+    generatingImage: "Sedek ngaénang gambar...",
+    generatedImage: "Gambar Pikolih",
+    download: "Unduh",
+    createImage: "Ngaé Gambar",
 
     copyToClipboard: "Salin",
     copiedToClipboard: "Sampun kasalin!",
@@ -668,6 +703,11 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     toolError: "Error",
     toolParameters: "Parameter",
     toolResult: "Hasil",
+    checkingWeather: "Sadang mangecek cuaco...",
+    generatingImage: "Sadang mambuek gambar...",
+    generatedImage: "Gambar Hasil",
+    download: "Unduah",
+    createImage: "Buek Gambar",
 
     copyToClipboard: "Salin",
     copiedToClipboard: "Alah tasalin!",

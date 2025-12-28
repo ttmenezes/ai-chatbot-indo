@@ -50,10 +50,10 @@ export default async function Page(props: {
           autoResume={false}
           id={id}
           initialChatModel={DEFAULT_CHAT_MODEL}
+          initialLocale={locale}
           initialMessages={initialMessages}
           initialVisibilityType="private"
           isReadonly={false}
-          initialLocale={locale}
         />
         <DataStreamHandler />
       </>
@@ -66,10 +66,10 @@ export default async function Page(props: {
         autoResume={false}
         id={id}
         initialChatModel={chatModelFromCookie.value}
+        initialLocale={locale}
         initialMessages={initialMessages}
         initialVisibilityType="private"
         isReadonly={false}
-        initialLocale={locale}
       />
       <DataStreamHandler />
     </>

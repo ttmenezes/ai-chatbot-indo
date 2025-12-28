@@ -14,6 +14,9 @@ dependencies:
   '@ai-sdk/react':
     specifier: 2.0.82
     version: 2.0.82(react@19.0.0-rc-45804af1-20241021)(zod@3.25.76)
+  '@ai-sdk/replicate':
+    specifier: ^2.0.1
+    version: 2.0.1(zod@3.25.76)
   '@codemirror/lang-javascript':
     specifier: ^6.2.2
     version: 6.2.4
@@ -315,8 +318,27 @@ packages:
       zod: 3.25.76
     dev: false
 
+  /@ai-sdk/provider-utils@4.0.1(zod@3.25.76):
+    resolution: {integrity: sha512-de2v8gH9zj47tRI38oSxhQIewmNc+OZjYIOOaMoVWKL65ERSav2PYYZHPSPCrfOeLMkv+Dyh8Y0QGwkO29wMWQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+    dependencies:
+      '@ai-sdk/provider': 3.0.0
+      '@standard-schema/spec': 1.1.0
+      eventsource-parser: 3.0.6
+      zod: 3.25.76
+    dev: false
+
   /@ai-sdk/provider@2.0.0:
     resolution: {integrity: sha512-6o7Y2SeO9vFKB8lArHXehNuusnpddKPk7xqL7T2/b+OvXMRIXUO1rR4wcv1hAFUAT9avGZshty3Wlua/XA7TvA==}
+    engines: {node: '>=18'}
+    dependencies:
+      json-schema: 0.4.0
+    dev: false
+
+  /@ai-sdk/provider@3.0.0:
+    resolution: {integrity: sha512-m9ka3ptkPQbaHHZHqDXDF9C9B5/Mav0KTdky1k2HZ3/nrW2t1AgObxIVPyGDWQNS9FXT/FS6PIoSjpcP/No8rQ==}
     engines: {node: '>=18'}
     dependencies:
       json-schema: 0.4.0
@@ -337,6 +359,17 @@ packages:
       react: 19.0.0-rc-45804af1-20241021
       swr: 2.3.8(react@19.0.0-rc-45804af1-20241021)
       throttleit: 2.1.0
+      zod: 3.25.76
+    dev: false
+
+  /@ai-sdk/replicate@2.0.1(zod@3.25.76):
+    resolution: {integrity: sha512-wALWYv6cnJjntAgqphVO0DTtkJRak2WC1JMJifbHsaeP3kVJttijxE5X0ccuDAEBub1t+3vA7JmKMA3w8kAlCQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+    dependencies:
+      '@ai-sdk/provider': 3.0.0
+      '@ai-sdk/provider-utils': 4.0.1(zod@3.25.76)
       zod: 3.25.76
     dev: false
 

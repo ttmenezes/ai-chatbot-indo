@@ -1,70 +1,252 @@
-<a href="https://chat.vercel.ai/">
-  <img alt="Next.js 14 and App Router-ready AI chatbot." src="app/(chat)/opengraph-image.png">
-  <h1 align="center">Chat SDK</h1>
-</a>
+# BasaChat
 
 <p align="center">
-    Chat SDK is a free, open-source template built with Next.js and the AI SDK that helps you quickly build powerful chatbot applications.
+  <strong>AI Chatbot for Indonesian Languages</strong>
 </p>
 
 <p align="center">
-  <a href="https://chat-sdk.dev"><strong>Read Docs</strong></a> ·
+  BasaChat brings artificial intelligence and information access to all people of Indonesia, supporting multiple Indonesian regional languages.
+</p>
+
+<p align="center">
   <a href="#features"><strong>Features</strong></a> ·
-  <a href="#model-providers"><strong>Model Providers</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#running-locally"><strong>Running locally</strong></a>
+  <a href="#supported-languages"><strong>Languages</strong></a> ·
+  <a href="#tools-and-capabilities"><strong>Tools</strong></a> ·
+  <a href="#tech-stack"><strong>Tech Stack</strong></a> ·
+  <a href="#setup"><strong>Setup</strong></a>
 </p>
-<br/>
 
 ## Features
 
-- [Next.js](https://nextjs.org) App Router
-  - Advanced routing for seamless navigation and performance
-  - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
-- [AI SDK](https://ai-sdk.dev/docs/introduction)
-  - Unified API for generating text, structured objects, and tool calls with LLMs
-  - Hooks for building dynamic chat and generative user interfaces
-  - Supports xAI (default), OpenAI, Fireworks, and other model providers
-- [shadcn/ui](https://ui.shadcn.com)
-  - Styling with [Tailwind CSS](https://tailwindcss.com)
-  - Component primitives from [Radix UI](https://radix-ui.com) for accessibility and flexibility
-- Data Persistence
-  - [Neon Serverless Postgres](https://vercel.com/marketplace/neon) for saving chat history and user data
-  - [Vercel Blob](https://vercel.com/storage/blob) for efficient file storage
-- [Auth.js](https://authjs.dev)
-  - Simple and secure authentication
+### 🌏 Multi-Language Support
+- **7 Languages**: Indonesian, English, Javanese, Sundanese, Acehnese, Balinese, and Minangkabau
+- Fully localized UI and responses
+- Auto-detection of user language preference
+- Language-specific suggested prompts
 
-## Model Providers
+### 🤖 AI Models
+- **Quick Model**: Google Gemini 2.5 Flash Lite (optimized for fast responses)
+- **Deep Model**: Google Gemini 2.5 Flash Lite with reasoning middleware (for complex problems)
+- Dynamic model selection based on query complexity
 
-This template uses the [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) to access multiple AI models through a unified interface. The default configuration includes [xAI](https://x.ai) models (`grok-2-vision-1212`, `grok-3-mini`) routed through the gateway.
+### 🎨 Image Generation
+- **Replicate Integration**: Generate images using FLUX Fast model
+- Support for multiple aspect ratios (1:1, 16:9, 9:16, 4:3, 3:4)
+- Toggle button for easy image generation mode
+- Automatic prompt localization
 
-### AI Gateway Authentication
+### 🔍 Web Search & News
+- **Google Search Integration**: Real-time web search with citation support
+- **News Search**: Indonesian news search capabilities
+- URL context extraction for accurate citations
+- Toggle controls for search features
 
-**For Vercel deployments**: Authentication is handled automatically via OIDC tokens.
+### 🌤️ Weather Tool
+- Current weather information
+- Hourly and daily forecasts
+- Support for city names or coordinates
+- Automatic geolocation detection
 
-**For non-Vercel deployments**: You need to provide an AI Gateway API key by setting the `AI_GATEWAY_API_KEY` environment variable in your `.env.local` file.
+### 👤 Authentication
+- Guest user support (no registration required)
+- Regular user accounts with email/password
+- Session management with NextAuth.js
+- User-specific chat history
 
-With the [AI SDK](https://ai-sdk.dev/docs/introduction), you can also switch to direct LLM providers like [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://ai-sdk.dev/providers/ai-sdk-providers) with just a few lines of code.
+### 💾 Data Persistence
+- PostgreSQL database for chat history and user data
+- LocalStorage for UI preferences
+- Chat transcript logging
 
-## Deploy Your Own
+## Supported Languages
 
-You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
+| Language | Code | Native Name |
+|----------|------|-------------|
+| Indonesian | `id` | Bahasa Indonesia |
+| English | `en` | English |
+| Javanese | `jv` | Basa Jawa |
+| Sundanese | `su` | Basa Sunda |
+| Acehnese | `ace` | Basa Acèh |
+| Balinese | `ban` | Basa Bali |
+| Minangkabau | `min` | Baso Minang |
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/templates/next.js/nextjs-ai-chatbot)
+## Tools and Capabilities
 
-## Running locally
+### Available Tools
+1. **Image Generation** (`generateImageTool`)
+   - Uses Replicate API with FLUX Fast model
+   - Supports custom prompts in any supported language
+   - Multiple aspect ratio options
 
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
+2. **Weather** (`getWeather`)
+   - Current weather conditions
+   - Hourly and daily forecasts
+   - Sunrise/sunset times
+   - Works with city names or coordinates
 
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various AI and authentication provider accounts.
+3. **Web Search** (`google_search`, `url_context`)
+   - Real-time web search
+   - URL context extraction
+   - Automatic citation generation
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
+### Smart Tool Selection
+- Gemini intelligently selects appropriate tools based on user intent
+- Custom tools (weather, image) provided when keywords detected
+- Web search tools available for general queries
+- Image generation toggle ensures tool availability
+
+## Tech Stack
+
+### Core Framework
+- **[Next.js 15](https://nextjs.org)** - React framework with App Router
+- **[React 19](https://react.dev)** - UI library
+- **[TypeScript](https://www.typescriptlang.org)** - Type safety
+
+### AI & ML
+- **[AI SDK v5](https://ai-sdk.dev)** - Unified AI interface
+- **[Google Generative AI](https://ai.google.dev)** - Gemini 2.5 Flash Lite models
+- **[Replicate](https://replicate.com)** - Image generation (FLUX Fast)
+
+### UI & Styling
+- **[shadcn/ui](https://ui.shadcn.com)** - Component library
+- **[Tailwind CSS](https://tailwindcss.com)** - Styling
+- **[Radix UI](https://radix-ui.com)** - Accessible primitives
+- **[Framer Motion](https://www.framer.com/motion)** - Animations
+
+### Database & Auth
+- **[PostgreSQL](https://www.postgresql.org)** - Database (via Neon or self-hosted)
+- **[Drizzle ORM](https://orm.drizzle.team)** - Type-safe database queries
+- **[NextAuth.js](https://authjs.dev)** - Authentication
+
+### Code Quality
+- **[Ultracite](https://github.com/ultracite/ultracite)** - Linting and formatting (Biome-based)
+- **[Biome](https://biomejs.dev)** - Fast formatter and linter
+
+## Setup
+
+### Prerequisites
+- Node.js 18+ 
+- pnpm 9.12.3+
+- PostgreSQL database (or Neon account)
+- Google AI API key
+- Replicate API token (for image generation)
+
+### Environment Variables
+
+Create a `.env.local` file with the following variables:
 
 ```bash
-pnpm install
-pnpm dev
+# Google AI (Gemini)
+GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key
+
+# Replicate (for image generation)
+REPLICATE_API_TOKEN=your_replicate_token
+
+# Database
+POSTGRES_URL=your_postgres_connection_string
+
+# NextAuth
+AUTH_SECRET=your_auth_secret
+NEXTAUTH_URL=http://localhost:3000
+
+# Optional: Vercel AI Gateway (if using)
+AI_GATEWAY_API_KEY=your_gateway_key
 ```
 
-Your app template should now be running on [localhost:3000](http://localhost:3000).
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd ai-chatbot-indo
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up the database**
+   ```bash
+   # Run migrations (if using Drizzle migrations)
+   pnpm drizzle-kit push
+   ```
+
+4. **Run development server**
+   ```bash
+   pnpm dev
+   ```
+
+5. **Open in browser**
+   ```
+   http://localhost:3000
+   ```
+
+### Production Build
+
+```bash
+pnpm build
+pnpm start
+```
+
+## Development
+
+### Available Scripts
+
+- `pnpm dev` - Start development server with Turbopack
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server
+- `pnpm lint` - Run linter (Ultracite/Biome)
+- `pnpm format` - Format code (Ultracite/Biome)
+- `pnpm test` - Run Playwright tests
+
+### Code Style
+
+This project uses **Ultracite** for code quality, which enforces:
+- Strict TypeScript type safety
+- Accessibility standards (a11y)
+- React best practices
+- Consistent code formatting
+
+Run `pnpm lint` to check for issues and `pnpm format` to auto-fix.
+
+## Architecture
+
+### Key Components
+
+- **`app/(chat)/api/chat/route.ts`** - Main chat API endpoint
+- **`lib/ai/providers.ts`** - AI model provider configuration
+- **`lib/ai/tools/`** - Custom tool definitions (weather, image generation)
+- **`lib/i18n.ts`** - Localization system
+- **`components/multimodal-input.tsx`** - Chat input with tool toggles
+- **`components/message.tsx`** - Message rendering with tool results
+
+### Tool Selection Logic
+
+The application uses intelligent tool routing:
+- Keywords trigger custom tools (weather, image)
+- Image generation toggle ensures tool availability
+- Gemini decides which tool to call based on context
+- Web search tools available for general queries
+
+### Message Sanitization
+
+Large base64 image data is automatically removed from conversation context before sending to the model to prevent token limit issues, while images remain visible in the UI.
+
+## Contributing
+
+Contributions are welcome! Please ensure:
+- Code follows Ultracite linting rules
+- All tests pass
+- TypeScript types are properly defined
+- Accessibility standards are met
+
+## License
+
+[Add your license here]
+
+## Acknowledgments
+
+- Built with [Vercel AI SDK](https://ai-sdk.dev)
+- Powered by [Google Gemini](https://ai.google.dev)
+- Image generation via [Replicate](https://replicate.com)

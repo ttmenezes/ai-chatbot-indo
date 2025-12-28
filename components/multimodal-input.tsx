@@ -47,6 +47,7 @@ import {
   ChevronDownIcon,
   CpuIcon,
   GlobeIcon,
+  ImageIcon,
   PaperclipIcon,
   StopIcon,
 } from "./icons";
@@ -173,6 +174,7 @@ function PureMultimodalInput({
   // Initialize with defaults to prevent hydration mismatch, sync with localStorage after mount
   const [webSearchEnabled, setWebSearchEnabled] = useState(false);
   const [newsSearchEnabled, setNewsSearchEnabled] = useState(false);
+  const [imageGenerationEnabled, setImageGenerationEnabled] = useState(false);
   // Initialize with URL param locale if provided (normalized to language name)
   const [languagePreference, setLanguagePreference] = useState(() => {
     if (initialLocale) {
@@ -210,6 +212,10 @@ function PureMultimodalInput({
     }
     if (storedNewsSearch === "true") {
       setNewsSearchEnabled(true);
+    }
+    const storedImageGen = localStorage.getItem("imageGenerationEnabled");
+    if (storedImageGen === "true") {
+      setImageGenerationEnabled(true);
     }
     // Only use localStorage if no URL param was provided
     // (URL param is handled by useState initializer and separate useEffect)
@@ -256,6 +262,15 @@ function PureMultimodalInput({
 
   useEffect(() => {
     if (isMounted) {
+      localStorage.setItem(
+        "imageGenerationEnabled",
+        String(imageGenerationEnabled)
+      );
+    }
+  }, [imageGenerationEnabled, isMounted]);
+
+  useEffect(() => {
+    if (isMounted) {
       localStorage.setItem("chat-language-preference", languagePreference);
     }
   }, [languagePreference, isMounted]);
@@ -276,6 +291,16 @@ function PureMultimodalInput({
   const submitForm = useCallback(() => {
     window.history.replaceState({}, "", `/chat/${chatId}`);
 
+    // When image generation is enabled, prepend instruction to ensure tool is called
+    // Use "Create Image" for English, "Buat Gambar" for all other languages
+    const imagePrefix =
+      normalizedLanguagePreference === "english"
+        ? "Create Image"
+        : "Buat Gambar";
+    const messageText = imageGenerationEnabled
+      ? `${imagePrefix}: ${input}`
+      : input;
+
     // Data property may exist at runtime but not in types
     sendMessage({
       role: "user",
@@ -288,12 +313,13 @@ function PureMultimodalInput({
         })),
         {
           type: "text",
-          text: input,
+          text: messageText,
         },
       ],
       data: {
         webSearchEnabled,
         newsSearchEnabled,
+        imageGenerationEnabled,
         languagePreference: normalizedLanguagePreference,
       },
     } as unknown as Parameters<typeof sendMessage>[0]);
@@ -317,6 +343,7 @@ function PureMultimodalInput({
     resetHeight,
     webSearchEnabled,
     newsSearchEnabled,
+    imageGenerationEnabled,
     normalizedLanguagePreference,
   ]);
 
@@ -491,6 +518,15 @@ function PureMultimodalInput({
               status={status}
               title={translator("toggleTitle", {
                 label: translator("news"),
+              })}
+            />
+            <ImageToggleButton
+              enabled={imageGenerationEnabled}
+              label={translator("createImage")}
+              onClick={() => setImageGenerationEnabled(!imageGenerationEnabled)}
+              status={status}
+              title={translator("toggleTitle", {
+                label: translator("createImage"),
               })}
             />
             <ModelSelectorCompact
@@ -766,3 +802,42 @@ function PureSearchToggleButton({
 }
 
 const SearchToggleButton = memo(PureSearchToggleButton);
+
+function PureImageToggleButton({
+  enabled,
+  label,
+  onClick,
+  status,
+  title,
+}: {
+  enabled: boolean;
+  label: string;
+  onClick: () => void;
+  status: UseChatHelpersType["status"];
+  title?: string;
+}) {
+  return (
+    <Button
+      className={cn(
+        "h-8 rounded-lg px-2 font-medium text-xs transition-colors",
+        enabled
+          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+          : "bg-background text-muted-foreground hover:bg-accent"
+      )}
+      disabled={status !== "ready"}
+      onClick={(event) => {
+        event.preventDefault();
+        onClick();
+      }}
+      title={title ?? label}
+      type="button"
+      variant="ghost"
+    >
+      <ImageIcon size={14} />
+      {/* Always show text, even on mobile */}
+      <span>{label}</span>
+    </Button>
+  );
+}
+
+const ImageToggleButton = memo(PureImageToggleButton);

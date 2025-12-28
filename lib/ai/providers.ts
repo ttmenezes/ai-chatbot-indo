@@ -1,4 +1,5 @@
 import { google } from "@ai-sdk/google";
+import { createReplicate } from "@ai-sdk/replicate";
 import {
   customProvider,
   extractReasoningMiddleware,
@@ -41,3 +42,8 @@ export const myProvider = isTestEnvironment
         "artifact-model": google("gemini-2.5-flash-lite-preview-09-2025"),
       },
     });
+
+// Replicate provider for image generation
+export const replicateProvider = createReplicate({
+  apiToken: process.env.REPLICATE_API_TOKEN ?? "",
+});

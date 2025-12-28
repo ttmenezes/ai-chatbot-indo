@@ -4,6 +4,7 @@ import equal from "fast-deep-equal";
 import { motion } from "framer-motion";
 import { memo, useMemo, useState } from "react";
 import { createTranslator } from "@/lib/i18n";
+import { useLocale } from "@/lib/locale-context";
 import type { ChatMessage, Vote } from "@/lib/types";
 import { cn, sanitizeText } from "@/lib/utils";
 import type { ArtifactKind } from "./artifact";
@@ -25,6 +26,7 @@ import {
   ToolOutput,
 } from "./elements/tool";
 import { SparklesIcon } from "./icons";
+import { ImageDisplay } from "./image-display";
 import { MessageActions } from "./message-actions";
 import { MessageEditor } from "./message-editor";
 import { MessageReasoning } from "./message-reasoning";
@@ -218,6 +220,7 @@ const PurePreviewMessage = ({
   requiresScrollPadding: boolean;
 }) => {
   const [mode, setMode] = useState<"view" | "edit">("view");
+  const { t } = useLocale();
 
   const attachmentsFromMessage = message.parts.filter(
     (part: ChatMessage["parts"][number]) => part.type === "file"
@@ -356,24 +359,75 @@ const PurePreviewMessage = ({
               if (type === "tool-getWeather") {
                 const { toolCallId, state } = part;
 
-                return (
-                  <Tool defaultOpen={true} key={toolCallId}>
-                    <ToolHeader state={state} type="tool-getWeather" />
-                    <ToolContent>
-                      {state === "input-available" && (
-                        <ToolInput input={part.input} />
-                      )}
-                      {state === "output-available" && (
-                        <ToolOutput
-                          errorText={undefined}
-                          output={
-                            <Weather weatherAtLocation={part.output as any} />
-                          }
-                        />
-                      )}
-                    </ToolContent>
-                  </Tool>
-                );
+                // While tool is running, show simple loading message
+                if (state === "input-available") {
+                  return (
+                    <div
+                      className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-muted-foreground text-sm"
+                      key={toolCallId}
+                    >
+                      <span className="inline-block size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      <span>{t.checkingWeather}</span>
+                    </div>
+                  );
+                }
+
+                // Only show full tool output when complete
+                if (state === "output-available") {
+                  return (
+                    <Weather
+                      key={toolCallId}
+                      weatherAtLocation={part.output as any}
+                    />
+                  );
+                }
+
+                return null;
+              }
+
+              if (type === "tool-generateImageTool") {
+                const { toolCallId, state } = part;
+
+                // While tool is running, show simple loading message
+                if (state === "input-available") {
+                  return (
+                    <div
+                      className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-muted-foreground text-sm"
+                      key={toolCallId}
+                    >
+                      <span className="inline-block size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      <span>{t.generatingImage}</span>
+                    </div>
+                  );
+                }
+
+                // Only show output when complete
+                if (state === "output-available") {
+                  const output = part.output as any;
+                  if (output?.success === true) {
+                    return (
+                      <ImageDisplay
+                        imageData={{
+                          base64: output.image.base64,
+                          prompt: output.prompt,
+                          aspectRatio: output.aspectRatio,
+                        }}
+                        key={toolCallId}
+                      />
+                    );
+                  }
+                  // Show error message
+                  return (
+                    <div
+                      className="rounded-md bg-destructive/10 px-3 py-2 text-destructive text-sm"
+                      key={toolCallId}
+                    >
+                      {output?.error || "Failed to generate image"}
+                    </div>
+                  );
+                }
+
+                return null;
               }
 
               if (type === "tool-requestSuggestions") {

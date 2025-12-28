@@ -13,13 +13,92 @@ import { getUsage } from "tokenlens/helpers";
 import type { ChatModel } from "@/lib/ai/models";
 import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { myProvider } from "@/lib/ai/providers";
+import { generateImageTool } from "@/lib/ai/tools/generate-image";
 import { getWeather } from "@/lib/ai/tools/get-weather";
 import { isProductionEnvironment } from "@/lib/constants";
 import { ChatSDKError } from "@/lib/errors";
 import { upsertChatLog } from "@/lib/supabase";
 import type { ChatMessage } from "@/lib/types";
 
-export const maxDuration = 60;
+/**
+ * Sanitize messages before sending to the model.
+ * Removes large base64 image data from tool results to prevent token limit issues.
+ * The image is still displayed in the UI, but we don't send the raw data back to the model.
+ */
+function sanitizeMessagesForModel(messages: UIMessage[]): UIMessage[] {
+  return messages.map((message) => {
+    if (message.role !== "assistant" || !message.parts) {
+      return message;
+    }
+
+    const sanitizedParts = message.parts.map((part: unknown) => {
+      const p = part as Record<string, unknown>;
+      // Check if this is a generateImageTool result with image data
+      if (
+        p.type === "tool-generateImageTool" &&
+        p.state === "output-available" &&
+        p.output
+      ) {
+        const output = p.output as Record<string, unknown>;
+        if (output.success === true && output.image) {
+          // Replace the large base64 data with a placeholder
+          return {
+            ...p,
+            output: {
+              success: true,
+              prompt: output.prompt,
+              aspectRatio: output.aspectRatio,
+              image: {
+                // Remove base64, keep only a note that image was generated
+                note: "[Image data removed from context to save tokens]",
+              },
+            },
+          };
+        }
+      }
+      return part;
+    });
+
+    return {
+      ...message,
+      parts: sanitizedParts,
+    } as UIMessage;
+  });
+}
+
+// Keywords that indicate user wants custom tools (weather, image generation, etc.)
+// rather than web search. When detected, we provide all custom tools and let Gemini decide.
+const CUSTOM_TOOL_KEYWORDS = [
+  // Weather keywords (English)
+  "weather",
+  "temperature",
+  "forecast",
+  "rain",
+  "sunny",
+  "cloudy",
+  // Weather keywords (Indonesian)
+  "cuaca",
+  "suhu",
+  "hujan",
+  "cerah",
+  "mendung",
+  "prakiraan",
+  // Image keywords (English)
+  "image",
+  "picture",
+  "photo",
+  "draw",
+  "paint",
+  "illustration",
+  "generate image",
+  "create image",
+  // Image keywords (Indonesian & regional languages)
+  "gambar",
+  "foto",
+  "lukis",
+];
+
+export const maxDuration = 120;
 
 const getTokenlensCatalog = cache(
   async (): Promise<ModelCatalog | undefined> => {
@@ -47,6 +126,7 @@ export async function POST(request: Request) {
       selectedChatModel,
       webSearchEnabled,
       newsSearchEnabled,
+      imageGenerationEnabled,
       languagePreference,
       chatId,
     }: {
@@ -54,6 +134,7 @@ export async function POST(request: Request) {
       selectedChatModel?: ChatModel["id"];
       webSearchEnabled?: boolean;
       newsSearchEnabled?: boolean;
+      imageGenerationEnabled?: boolean;
       languagePreference?: string;
       chatId?: string;
     } = json;
@@ -86,40 +167,29 @@ export async function POST(request: Request) {
           .join(" ") || ""
       : "";
 
-    // Check for explicit weather keywords to use weather-specific tools
-    const weatherKeywords = [
-      // English
-      "weather",
-      "temperature",
-      "forecast",
-      "rain",
-      "sunny",
-      "cloudy",
-      // Indonesian
-      "cuaca",
-      "suhu",
-      "hujan",
-      "cerah",
-      "mendung",
-      "prakiraan cuaca",
-    ];
-    const userRequestedWeather = weatherKeywords.some((keyword) =>
-      userMessageText.toLowerCase().includes(keyword)
-    );
+    // Check if user's message suggests they want custom tools (weather, images, etc.)
+    // If so, provide all custom tools and let Gemini decide which to use
+    const userMessageLower = userMessageText.toLowerCase();
+    const wantsCustomTools =
+      imageGenerationEnabled ||
+      CUSTOM_TOOL_KEYWORDS.some((keyword) =>
+        userMessageLower.includes(keyword)
+      );
 
     // IMPORTANT: Cannot mix function tools with provider-defined tools!
-    // Strategy: Let the model decide when to search by always providing search tools.
-    // Only use getWeather for explicit weather queries.
+    // Strategy: If user enables image mode OR mentions weather/image keywords, provide all custom tools.
+    // Gemini will intelligently decide which tool to call based on context.
+    // Otherwise, fall back to Google's native search tools.
     let tools: Record<string, any>;
 
-    if (userRequestedWeather) {
-      // Weather-specific tools only
+    if (wantsCustomTools) {
+      // Provide all custom tools - let Gemini decide which to use
       tools = {
         getWeather,
+        generateImageTool,
       };
     } else {
-      // Default: Always provide search tools - let the model decide when to use them
-      // The model will autonomously determine if a query requires recent/grounded info
+      // Default: Provide Google search tools for general queries
       const googleSearchTool = google.tools.googleSearch({});
       tools = {
         google_search: googleSearchTool,
@@ -137,11 +207,14 @@ export async function POST(request: Request) {
       languagePreference,
     });
 
+    // Sanitize messages to remove large base64 image data before sending to model
+    const sanitizedMessages = sanitizeMessagesForModel(messages);
+
     // Use AI SDK v5 streamText with toUIMessageStreamResponse
     const result = streamText({
       model,
       system,
-      messages: convertToModelMessages(uiMessages),
+      messages: convertToModelMessages(sanitizedMessages),
       experimental_transform: smoothStream({ chunking: "word" }),
       tools,
       experimental_telemetry: {

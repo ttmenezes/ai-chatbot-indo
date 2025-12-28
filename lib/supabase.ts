@@ -61,22 +61,19 @@ export async function upsertChatLog({
   messages: ChatMessage[];
   locale?: string;
 }) {
-  const { error } = await supabase
-    .from("logs")
-    .upsert(
-      {
-        id,
-        messages: messages as unknown as Record<string, unknown>,
-        locale: locale || null,
-      },
-      {
-        onConflict: "id",
-      }
-    );
+  const { error } = await supabase.from("logs").upsert(
+    {
+      id,
+      messages: messages as unknown as Record<string, unknown>,
+      locale: locale || null,
+    },
+    {
+      onConflict: "id",
+    }
+  );
 
   if (error) {
     console.error("Failed to upsert chat log:", error);
     throw error;
   }
 }
-
