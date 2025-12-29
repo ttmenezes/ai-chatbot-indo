@@ -56,8 +56,6 @@ import { SuggestedActions } from "./suggested-actions";
 import { Button } from "./ui/button";
 import type { VisibilityType } from "./visibility-selector";
 
-// Extract the actual return type from useChat when called with ChatMessage
-// Since UseChatHelpers should be generic, we use a helper to extract the type
 type UseChatHelpersType = ReturnType<typeof useChat<ChatMessage>>;
 
 const UNIQUE_PROMPT_LANGUAGES = Array.from(new Set(promptLanguages));
@@ -67,7 +65,6 @@ const LANGUAGE_OPTION_VALUES = new Set<string>([
   ...UNIQUE_PROMPT_LANGUAGES,
 ]);
 
-// Map locale codes (from URL params) to language preference names (for dropdown)
 const LOCALE_TO_LANGUAGE: Record<string, string> = {
   id: "indonesian",
   en: "english",
@@ -78,7 +75,6 @@ const LOCALE_TO_LANGUAGE: Record<string, string> = {
   min: "minangkabau",
 };
 
-// Map English language names to Indonesian/native language names for display
 const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
   indonesian: "Bahasa Indonesia",
   english: "English",
@@ -95,17 +91,14 @@ const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
 };
 
 const normalizeLanguagePreference = (value: string) => {
-  // First check if it's a locale code that needs mapping
   const mapped = LOCALE_TO_LANGUAGE[value];
   if (mapped && LANGUAGE_OPTION_VALUES.has(mapped)) {
     return mapped;
   }
-  // Otherwise check if it's already a valid language preference
   return LANGUAGE_OPTION_VALUES.has(value) ? value : "auto";
 };
 
 const formatLanguageLabel = (language: string): string => {
-  // Use native language name if available, otherwise fall back to formatted English name
   return LANGUAGE_DISPLAY_NAMES[language] ?? formatPromptLanguage(language);
 };
 
@@ -171,11 +164,9 @@ function PureMultimodalInput({
     }
   }, []);
 
-  // Initialize with defaults to prevent hydration mismatch, sync with localStorage after mount
   const [webSearchEnabled, setWebSearchEnabled] = useState(false);
   const [newsSearchEnabled, setNewsSearchEnabled] = useState(false);
   const [imageGenerationEnabled, setImageGenerationEnabled] = useState(false);
-  // Initialize with URL param locale if provided (normalized to language name)
   const [languagePreference, setLanguagePreference] = useState(() => {
     if (initialLocale) {
       return normalizeLanguagePreference(initialLocale);
@@ -199,7 +190,6 @@ function PureMultimodalInput({
     [translator]
   );
 
-  // Sync all localStorage values after mount to prevent hydration mismatch
   useEffect(() => {
     setIsMounted(true);
     const storedWebSearch = localStorage.getItem("webSearchEnabled");
@@ -217,15 +207,12 @@ function PureMultimodalInput({
     if (storedImageGen === "true") {
       setImageGenerationEnabled(true);
     }
-    // Only use localStorage if no URL param was provided
-    // (URL param is handled by useState initializer and separate useEffect)
     if (!initialLocale && storedLanguage) {
       const normalized = normalizeLanguagePreference(storedLanguage);
       setLanguagePreference(normalized);
     }
     if (storedInput) {
       const trimmedInput = storedInput.trim();
-      // Clear invalid values (empty strings or just quotes)
       if (!trimmedInput || trimmedInput === '""') {
         localStorage.setItem("input", "");
       } else if (textareaRef.current) {
@@ -237,17 +224,14 @@ function PureMultimodalInput({
     }
   }, [adjustHeight, setInput, initialLocale]);
 
-  // Handle URL param locale changes and persist to localStorage
   useEffect(() => {
     if (initialLocale) {
       const normalized = normalizeLanguagePreference(initialLocale);
       setLanguagePreference(normalized);
-      // Save to localStorage so it persists
       localStorage.setItem("chat-language-preference", normalized);
     }
   }, [initialLocale]);
 
-  // Persist to localStorage when values change (only after mount)
   useEffect(() => {
     if (isMounted) {
       localStorage.setItem("webSearchEnabled", String(webSearchEnabled));
@@ -291,8 +275,6 @@ function PureMultimodalInput({
   const submitForm = useCallback(() => {
     window.history.replaceState({}, "", `/chat/${chatId}`);
 
-    // When image generation is enabled, prepend instruction to ensure tool is called
-    // Use "Create Image" for English, "Buat Gambar" for all other languages
     const imagePrefix =
       normalizedLanguagePreference === "english"
         ? "Create Image"
@@ -301,7 +283,6 @@ function PureMultimodalInput({
       ? `${imagePrefix}: ${input}`
       : input;
 
-    // Data property may exist at runtime but not in types
     sendMessage({
       role: "user",
       parts: [
@@ -496,11 +477,6 @@ function PureMultimodalInput({
         </div>
         <PromptInputToolbar className="!border-top-0 border-t-0! p-0 shadow-none dark:border-0 dark:border-transparent!">
           <PromptInputTools className="gap-0 sm:gap-0.5">
-            {/* <AttachmentsButton
-              fileInputRef={fileInputRef}
-              selectedModelId={selectedModelId}
-              status={status}
-            /> */}
             <SearchToggleButton
               enabled={webSearchEnabled}
               label={translator("webSearch")}
@@ -629,35 +605,6 @@ function PureLanguagePreferenceSelect({
 
 const LanguagePreferenceSelect = memo(PureLanguagePreferenceSelect);
 
-// function PureAttachmentsButton({
-//   fileInputRef,
-//   status,
-//   selectedModelId,
-// }: {
-//   fileInputRef: React.MutableRefObject<HTMLInputElement | null>;
-//   status: UseChatHelpersType["status"];
-//   selectedModelId: string;
-// }) {
-//   const isReasoningModel = selectedModelId === "chat-model-reasoning";
-
-//   return (
-//     <Button
-//       className="aspect-square h-8 rounded-lg p-1 transition-colors hover:bg-accent"
-//       data-testid="attachments-button"
-//       disabled={status !== "ready" || isReasoningModel}
-//       onClick={(event) => {
-//         event.preventDefault();
-//         fileInputRef.current?.click();
-//       }}
-//       variant="ghost"
-//     >
-//       <PaperclipIcon size={14} style={{ width: 14, height: 14 }} />
-//     </Button>
-//   );
-// }
-
-// const AttachmentsButton = memo(PureAttachmentsButton);
-
 function PureModelSelectorCompact({
   selectedModelId,
   onModelChange,
@@ -673,9 +620,7 @@ function PureModelSelectorCompact({
     setOptimisticModelId(selectedModelId);
   }, [selectedModelId]);
 
-  // Get localized models based on language preference
   const localizedModels = useMemo(() => {
-    // Map language preference to locale
     const localeMap: Record<
       string,
       "id" | "en" | "jv" | "su" | "ace" | "ban" | "min"
@@ -834,7 +779,6 @@ function PureImageToggleButton({
       variant="ghost"
     >
       <ImageIcon size={14} />
-      {/* Always show text, even on mobile */}
       <span>{label}</span>
     </Button>
   );

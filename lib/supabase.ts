@@ -1,9 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { ChatMessage } from "./types";
 
-// Server-side Supabase client using publishable key
-// Note: RLS policies must allow inserts/upserts for these operations
-// Using server-only env vars (no NEXT_PUBLIC_ prefix) since this code runs server-side
 const supabaseUrl =
   process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabasePublishableKey =
@@ -27,9 +24,6 @@ const supabase = createClient(supabaseUrl, supabasePublishableKey, {
   },
 });
 
-/**
- * Save user feedback to the feedback table
- */
 export async function saveFeedback({
   email,
   feedbackText,
@@ -48,10 +42,6 @@ export async function saveFeedback({
   }
 }
 
-/**
- * Upsert chat log to the logs table
- * Uses session ID as primary key, so multiple calls will overwrite the same row
- */
 export async function upsertChatLog({
   id,
   messages,
@@ -74,6 +64,15 @@ export async function upsertChatLog({
 
   if (error) {
     console.error("Failed to upsert chat log:", error);
+    throw error;
+  }
+}
+
+export async function deleteChatLogById(id: string) {
+  const { error } = await supabase.from("logs").delete().eq("id", id);
+
+  if (error) {
+    console.error("Failed to delete chat log:", error);
     throw error;
   }
 }

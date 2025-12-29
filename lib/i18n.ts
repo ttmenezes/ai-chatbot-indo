@@ -4,32 +4,28 @@
  */
 
 export type SupportedLocale =
-  | "id" // Indonesian
-  | "en" // English
-  | "jv" // Javanese
-  | "su" // Sundanese
-  | "ace" // Acehnese
-  | "ban" // Balinese
-  | "min"; // Minangkabau
+  | "id"
+  | "en"
+  | "jv"
+  | "su"
+  | "ace"
+  | "ban"
+  | "min";
 
 export type TranslationKeys = {
-  // App general
   appName: string;
   newChat: string;
   chatHistory: string;
   chatHistoryEmpty: string;
 
-  // Model names
   modelQuick: string;
   modelQuickDesc: string;
   modelSlow: string;
   modelSlowDesc: string;
 
-  // About section
   aboutTitle: string;
   aboutDescription: string;
 
-  // About page
   aboutPageTitle: string;
   aboutPageParagraph1: string;
   aboutPageParagraph2: string;
@@ -37,7 +33,6 @@ export type TranslationKeys = {
   aboutPageStartChatting: string;
   aboutLink: string;
 
-  // Feedback
   feedbackTitle: string;
   feedbackDescription: string;
   feedbackPlaceholder: string;
@@ -50,7 +45,6 @@ export type TranslationKeys = {
   feedbackButton: string;
   feedbackInputTitle: string;
 
-  // Input/Chat
   inputPlaceholder: string;
   toastUploadFailed: string;
   toastWait: string;
@@ -61,7 +55,6 @@ export type TranslationKeys = {
   preferredLanguage: string;
   languageSelectTitle: string;
 
-  // Progress/Thinking
   thinkingPrimary: string;
   progressWebSearch: string;
   progressNews: string;
@@ -71,14 +64,11 @@ export type TranslationKeys = {
   progressReasoningHeading: string;
   scrollToBottom: string;
 
-  // Reasoning
   reasoningThinking: string;
   reasoningThoughtFor: string;
 
-  // Sources
   sources: string;
 
-  // Tool status
   toolPending: string;
   toolRunning: string;
   toolCompleted: string;
@@ -91,7 +81,6 @@ export type TranslationKeys = {
   download: string;
   createImage: string;
 
-  // Message actions
   copyToClipboard: string;
   copiedToClipboard: string;
   nothingToCopy: string;
@@ -104,6 +93,39 @@ export type TranslationKeys = {
   downvotingResponse: string;
   downvotedResponse: string;
   failedToDownvote: string;
+
+  consentTitle: string;
+  consentDescription: string;
+  consentStorageNotice: string;
+  consentAiNotice: string;
+  consentPrivacyLink: string;
+  consentTrainingLabel: string;
+  consentTrainingDescription: string;
+  consentAcceptButton: string;
+  consentRequiredNotice: string;
+
+  aiDisclosure: string;
+
+  privacyPageTitle: string;
+  privacyLastUpdated: string;
+  privacyIntro: string;
+  privacyDataCollectionTitle: string;
+  privacyDataCollectionContent: string;
+  privacyDataUsageTitle: string;
+  privacyDataUsageContent: string;
+  privacyDataStorageTitle: string;
+  privacyDataStorageContent: string;
+  privacyUserRightsTitle: string;
+  privacyUserRightsContent: string;
+  privacyContactTitle: string;
+  privacyContactContent: string;
+
+  clearDataButton: string;
+  clearDataConfirmTitle: string;
+  clearDataConfirmDescription: string;
+  clearDataConfirmButton: string;
+  clearDataCancelButton: string;
+  clearDataSuccess: string;
 };
 
 export const translations: Record<SupportedLocale, TranslationKeys> = {
@@ -194,6 +216,56 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     downvotingResponse: "Memberi nilai negatif...",
     downvotedResponse: "Nilai negatif diberikan!",
     failedToDownvote: "Gagal memberi nilai negatif.",
+
+    // Consent banner
+    consentTitle: "Selamat Datang di BasaChat",
+    consentDescription:
+      "Dengan melanjutkan, Anda menyetujui ketentuan berikut:",
+    consentStorageNotice:
+      "Kami menyimpan riwayat obrolan Anda untuk menyediakan layanan ini",
+    consentAiNotice:
+      "Anda berinteraksi dengan kecerdasan buatan (AI), bukan manusia",
+    consentPrivacyLink: "Baca Kebijakan Privasi",
+    consentTrainingLabel: "Bantu tingkatkan BasaChat",
+    consentTrainingDescription:
+      "Izinkan penggunaan obrolan Anda untuk melatih dan meningkatkan AI kami (opsional)",
+    consentAcceptButton: "Mulai Mengobrol",
+    consentRequiredNotice:
+      "Persetujuan diperlukan untuk menggunakan layanan ini",
+
+    // AI disclosure
+    aiDisclosure:
+      "Anda sedang berbicara dengan AI. Respons mungkin tidak selalu akurat.",
+
+    // Privacy page
+    privacyPageTitle: "Kebijakan Privasi",
+    privacyLastUpdated: "Terakhir diperbarui: {date}",
+    privacyIntro:
+      "BasaChat berkomitmen melindungi privasi Anda. Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi data Anda sesuai dengan Undang-Undang Pelindungan Data Pribadi (UU PDP) Indonesia.",
+    privacyDataCollectionTitle: "Data yang Kami Kumpulkan",
+    privacyDataCollectionContent:
+      "Kami mengumpulkan: riwayat obrolan Anda dengan BasaChat, preferensi bahasa, dan data teknis seperti jenis perangkat dan browser. Kami tidak mengumpulkan nama, email, atau informasi identitas pribadi lainnya kecuali Anda memberikannya secara sukarela dalam obrolan.",
+    privacyDataUsageTitle: "Penggunaan Data",
+    privacyDataUsageContent:
+      "Data obrolan digunakan untuk: menyediakan layanan AI, meningkatkan kualitas respons, dan jika Anda menyetujui, melatih model AI kami. Kami tidak menjual data Anda kepada pihak ketiga.",
+    privacyDataStorageTitle: "Penyimpanan Data",
+    privacyDataStorageContent:
+      "Data disimpan dengan aman di server kami. Riwayat obrolan disimpan selama akun Anda aktif atau sampai Anda menghapusnya. Anda dapat menghapus riwayat obrolan kapan saja.",
+    privacyUserRightsTitle: "Hak Anda",
+    privacyUserRightsContent:
+      "Sesuai UU PDP Indonesia, Anda berhak: mengakses data Anda, meminta penghapusan data, menarik persetujuan, dan mengajukan keberatan atas pemrosesan data.",
+    privacyContactTitle: "Hubungi Kami",
+    privacyContactContent:
+      "Untuk pertanyaan tentang privasi atau permintaan penghapusan data, hubungi kami di privacy@basachat.com",
+
+    // Clear data
+    clearDataButton: "Hapus Riwayat Saya",
+    clearDataConfirmTitle: "Hapus Semua Data?",
+    clearDataConfirmDescription:
+      "Tindakan ini akan menghapus semua riwayat obrolan dan preferensi Anda secara permanen. Tindakan ini tidak dapat dibatalkan.",
+    clearDataConfirmButton: "Ya, Hapus Semua",
+    clearDataCancelButton: "Batal",
+    clearDataSuccess: "Data Anda telah dihapus.",
   },
   en: {
     appName: "BasaChat",
@@ -281,6 +353,53 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     downvotingResponse: "Downvoting Response...",
     downvotedResponse: "Downvoted Response!",
     failedToDownvote: "Failed to downvote response.",
+
+    // Consent banner
+    consentTitle: "Welcome to BasaChat",
+    consentDescription: "By continuing, you agree to the following:",
+    consentStorageNotice: "We store your chat history to provide this service",
+    consentAiNotice:
+      "You are interacting with artificial intelligence (AI), not a human",
+    consentPrivacyLink: "Read Privacy Policy",
+    consentTrainingLabel: "Help improve BasaChat",
+    consentTrainingDescription:
+      "Allow your chats to be used to train and improve our AI (optional)",
+    consentAcceptButton: "Start Chatting",
+    consentRequiredNotice: "Consent is required to use this service",
+
+    // AI disclosure
+    aiDisclosure:
+      "You are chatting with an AI. Responses may not always be accurate.",
+
+    // Privacy page
+    privacyPageTitle: "Privacy Policy",
+    privacyLastUpdated: "Last updated: {date}",
+    privacyIntro:
+      "BasaChat is committed to protecting your privacy. This policy explains how we collect, use, and protect your data in accordance with Indonesia's Personal Data Protection Law (UU PDP).",
+    privacyDataCollectionTitle: "Data We Collect",
+    privacyDataCollectionContent:
+      "We collect: your chat history with BasaChat, language preferences, and technical data such as device type and browser. We do not collect names, emails, or other personally identifiable information unless you voluntarily provide it in your chats.",
+    privacyDataUsageTitle: "Data Usage",
+    privacyDataUsageContent:
+      "Chat data is used to: provide the AI service, improve response quality, and if you consent, train our AI models. We do not sell your data to third parties.",
+    privacyDataStorageTitle: "Data Storage",
+    privacyDataStorageContent:
+      "Data is stored securely on our servers. Chat history is kept as long as your account is active or until you delete it. You can delete your chat history at any time.",
+    privacyUserRightsTitle: "Your Rights",
+    privacyUserRightsContent:
+      "Under Indonesia's PDP Law, you have the right to: access your data, request data deletion, withdraw consent, and object to data processing.",
+    privacyContactTitle: "Contact Us",
+    privacyContactContent:
+      "For privacy questions or data deletion requests, contact us at privacy@basachat.com",
+
+    // Clear data
+    clearDataButton: "Clear My History",
+    clearDataConfirmTitle: "Delete All Data?",
+    clearDataConfirmDescription:
+      "This will permanently delete all your chat history and preferences. This action cannot be undone.",
+    clearDataConfirmButton: "Yes, Delete All",
+    clearDataCancelButton: "Cancel",
+    clearDataSuccess: "Your data has been deleted.",
   },
   jv: {
     appName: "BasaChat",
@@ -369,6 +488,55 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     downvotingResponse: "Menehi nilai kurang...",
     downvotedResponse: "Wis menehi nilai kurang!",
     failedToDownvote: "Gagal menehi nilai kurang.",
+
+    // Consent banner
+    consentTitle: "Sugeng Rawuh ing BasaChat",
+    consentDescription: "Kanthi nerusake, sampeyan setuju karo ketentuan iki:",
+    consentStorageNotice:
+      "Kita nyimpen riwayat obrolan sampeyan kanggo nyedhiyakake layanan iki",
+    consentAiNotice:
+      "Sampeyan lagi ngobrol karo kecerdasan buatan (AI), dudu manungsa",
+    consentPrivacyLink: "Waca Kebijakan Privasi",
+    consentTrainingLabel: "Tulung tingkatake BasaChat",
+    consentTrainingDescription:
+      "Ijinake obrolan sampeyan digunakake kanggo nglatih lan ningkatake AI kita (opsional)",
+    consentAcceptButton: "Mulai Ngobrol",
+    consentRequiredNotice:
+      "Persetujuan dibutuhake kanggo nggunakake layanan iki",
+
+    // AI disclosure
+    aiDisclosure:
+      "Sampeyan lagi ngobrol karo AI. Jawaban bisa uga ora selawase bener.",
+
+    // Privacy page
+    privacyPageTitle: "Kebijakan Privasi",
+    privacyLastUpdated: "Pungkasan dianyari: {date}",
+    privacyIntro:
+      "BasaChat komitmen njaga privasi sampeyan. Kebijakan iki nerangake cara kita ngumpulake, nggunakake, lan njaga data sampeyan miturut UU PDP Indonesia.",
+    privacyDataCollectionTitle: "Data sing Dikumpulake",
+    privacyDataCollectionContent:
+      "Kita ngumpulake: riwayat obrolan sampeyan karo BasaChat, preferensi basa, lan data teknis kaya jinis piranti lan browser.",
+    privacyDataUsageTitle: "Panggunaan Data",
+    privacyDataUsageContent:
+      "Data obrolan digunakake kanggo: nyedhiyakake layanan AI, ningkatake kualitas jawaban, lan yen sampeyan setuju, nglatih model AI kita.",
+    privacyDataStorageTitle: "Panyimpenan Data",
+    privacyDataStorageContent:
+      "Data disimpen kanthi aman ing server kita. Sampeyan bisa mbusak riwayat obrolan kapan wae.",
+    privacyUserRightsTitle: "Hak Sampeyan",
+    privacyUserRightsContent:
+      "Miturut UU PDP Indonesia, sampeyan duwe hak kanggo: ngakses data, njaluk pambusakan data, mbatalake persetujuan, lan nolak pemrosesan data.",
+    privacyContactTitle: "Hubungi Kita",
+    privacyContactContent:
+      "Kanggo pitakon babagan privasi, hubungi kita ing privacy@basachat.com",
+
+    // Clear data
+    clearDataButton: "Busak Riwayatku",
+    clearDataConfirmTitle: "Busak Kabeh Data?",
+    clearDataConfirmDescription:
+      "Iki bakal mbusak kabeh riwayat obrolan lan preferensi sampeyan. Ora bisa dibatalake.",
+    clearDataConfirmButton: "Ya, Busak Kabeh",
+    clearDataCancelButton: "Batal",
+    clearDataSuccess: "Data sampeyan wis dibusak.",
   },
   su: {
     appName: "BasaChat",
@@ -457,6 +625,55 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     downvotingResponse: "Méré nilai kirang...",
     downvotedResponse: "Tos méré nilai kirang!",
     failedToDownvote: "Gagal méré nilai kirang.",
+
+    // Consent banner
+    consentTitle: "Wilujeng Sumping di BasaChat",
+    consentDescription: "Ku neraskeun, anjeun satuju sareng katangtuan ieu:",
+    consentStorageNotice:
+      "Urang nyimpen riwayat obrolan anjeun pikeun nyayogikeun layanan ieu",
+    consentAiNotice:
+      "Anjeun keur ngobrol sareng kecerdasan jieunan (AI), sanés manusa",
+    consentPrivacyLink: "Baca Kabijakan Privasi",
+    consentTrainingLabel: "Bantosan ningkatkeun BasaChat",
+    consentTrainingDescription:
+      "Idinan obrolan anjeun dianggo pikeun ngalatih sareng ningkatkeun AI urang (opsional)",
+    consentAcceptButton: "Mimitian Ngobrol",
+    consentRequiredNotice:
+      "Persetujuan diperyogikeun pikeun nganggo layanan ieu",
+
+    // AI disclosure
+    aiDisclosure:
+      "Anjeun keur ngobrol sareng AI. Jawaban tiasa henteu salawasna akurat.",
+
+    // Privacy page
+    privacyPageTitle: "Kabijakan Privasi",
+    privacyLastUpdated: "Pamungkas diropéa: {date}",
+    privacyIntro:
+      "BasaChat komitmen ngajagi privasi anjeun. Kabijakan ieu ngajelaskeun kumaha urang ngumpulkeun, nganggo, sareng ngajagi data anjeun dumasar kana UU PDP Indonésia.",
+    privacyDataCollectionTitle: "Data anu Dikumpulkeun",
+    privacyDataCollectionContent:
+      "Urang ngumpulkeun: riwayat obrolan anjeun sareng BasaChat, préferénsi basa, sareng data téknis sapertos jinis alat sareng browser.",
+    privacyDataUsageTitle: "Panggunaan Data",
+    privacyDataUsageContent:
+      "Data obrolan dianggo pikeun: nyayogikeun layanan AI, ningkatkeun kualitas jawaban, sareng upami anjeun satuju, ngalatih modél AI urang.",
+    privacyDataStorageTitle: "Panyimpenan Data",
+    privacyDataStorageContent:
+      "Data disimpen kalayan aman dina server urang. Anjeun tiasa ngahapus riwayat obrolan iraha waé.",
+    privacyUserRightsTitle: "Hak Anjeun",
+    privacyUserRightsContent:
+      "Dumasar kana UU PDP Indonésia, anjeun gaduh hak pikeun: ngaksés data, ménta ngahapus data, narik deui persetujuan, sareng nolak pamrosésan data.",
+    privacyContactTitle: "Hubungi Urang",
+    privacyContactContent:
+      "Pikeun patarosan ngeunaan privasi, hubungi urang di privacy@basachat.com",
+
+    // Clear data
+    clearDataButton: "Hapus Riwayat Kuring",
+    clearDataConfirmTitle: "Hapus Sadaya Data?",
+    clearDataConfirmDescription:
+      "Ieu bakal ngahapus sadaya riwayat obrolan sareng préferénsi anjeun. Teu tiasa dibatalkeun.",
+    clearDataConfirmButton: "Enya, Hapus Sadayana",
+    clearDataCancelButton: "Batal",
+    clearDataSuccess: "Data anjeun parantos dihapus.",
   },
   ace: {
     appName: "BasaChat",
@@ -545,6 +762,54 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     downvotingResponse: "Lam bri nilai kureueng...",
     downvotedResponse: "Ka bri nilai kureueng!",
     failedToDownvote: "Gagal bri nilai kureueng.",
+
+    // Consent banner
+    consentTitle: "Meuseulawet u BasaChat",
+    consentDescription:
+      "Ngon meuteureubeh, gata meuseutuju ngon ketentuan nyoe:",
+    consentStorageNotice:
+      "Kamoe meusimpen riwayat peugah gata keu meuseudiya layanan nyoe",
+    consentAiNotice:
+      "Gata lam meupeugah ngon kecerdasan buatan (AI), kon manusia",
+    consentPrivacyLink: "Baca Kebijakan Privasi",
+    consentTrainingLabel: "Tulong tingkatkan BasaChat",
+    consentTrainingDescription:
+      "Bri izin peugah gata digunakan keu melatih dan meningkatkan AI kamoe (opsional)",
+    consentAcceptButton: "Mulai Meupeugah",
+    consentRequiredNotice: "Persetujuan diperlukan keu meugunakan layanan nyoe",
+
+    // AI disclosure
+    aiDisclosure: "Gata lam meupeugah ngon AI. Jaweuban mungken hana teupat.",
+
+    // Privacy page
+    privacyPageTitle: "Kebijakan Privasi",
+    privacyLastUpdated: "Teureakhée diperbarui: {date}",
+    privacyIntro:
+      "BasaChat komitmen meulindungi privasi gata. Kebijakan nyoe neujelaskan bagaimana kamoe mengumpulkan, meugunakan, dan meulindungi data gata sesuai ngon UU PDP Indonesia.",
+    privacyDataCollectionTitle: "Data nyang Dikumpulkan",
+    privacyDataCollectionContent:
+      "Kamoe mengumpulkan: riwayat peugah gata ngon BasaChat, preferensi bahasa, dan data teknis.",
+    privacyDataUsageTitle: "Penggunaan Data",
+    privacyDataUsageContent:
+      "Data peugah digunakan keu: meuseudiya layanan AI, meningkatkan kualitas jaweuban, dan jika gata setuju, melatih model AI kamoe.",
+    privacyDataStorageTitle: "Penyimpanan Data",
+    privacyDataStorageContent:
+      "Data disimpen ngon aman di server kamoe. Gata jeut meuhapus riwayat peugah bilapun.",
+    privacyUserRightsTitle: "Hak Gata",
+    privacyUserRightsContent:
+      "Sesuai UU PDP Indonesia, gata na hak keu: meungakses data, meununtut penghapusan data, meutarik persetujuan, dan meunolak pemrosesan data.",
+    privacyContactTitle: "Hubungi Kamoe",
+    privacyContactContent:
+      "Keu pertanyaan tentang privasi, hubungi kamoe di privacy@basachat.com",
+
+    // Clear data
+    clearDataButton: "Hapus Riwayat Lon",
+    clearDataConfirmTitle: "Hapus Ban Mandum Data?",
+    clearDataConfirmDescription:
+      "Nyoe akan meuhapus ban mandum riwayat peugah dan preferensi gata. Hana jeut dibatalkan.",
+    clearDataConfirmButton: "Jeh, Hapus Ban Mandum",
+    clearDataCancelButton: "Batal",
+    clearDataSuccess: "Data gata ka teuhapus.",
   },
   ban: {
     appName: "BasaChat",
@@ -633,6 +898,56 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     downvotingResponse: "Ngicen nilai kirang...",
     downvotedResponse: "Sampun ngicen nilai kirang!",
     failedToDownvote: "Gagal ngicen nilai kirang.",
+
+    // Consent banner
+    consentTitle: "Rahajeng Rauh ring BasaChat",
+    consentDescription:
+      "Antuk nglanturang, ragané setuju sareng katentuan puniki:",
+    consentStorageNotice:
+      "Tiang nyimpen riwayat omongan ragané anggen nyediaang layanan puniki",
+    consentAiNotice:
+      "Ragané sedek mabebaosan sareng kecerdasan buatan (AI), nénten manusa",
+    consentPrivacyLink: "Wacen Kabijakan Privasi",
+    consentTrainingLabel: "Tulung tingkatang BasaChat",
+    consentTrainingDescription:
+      "Lugrayang omongan ragané kaanggo anggen nglatih lan ningkatang AI tiang (opsional)",
+    consentAcceptButton: "Ngawitin Mabebaosan",
+    consentRequiredNotice:
+      "Persetujuan kabuatang anggen nganggo layanan puniki",
+
+    // AI disclosure
+    aiDisclosure:
+      "Ragané sedek mabebaosan sareng AI. Jawaban mrasidayang nénten selalu tepat.",
+
+    // Privacy page
+    privacyPageTitle: "Kabijakan Privasi",
+    privacyLastUpdated: "Kaping terakhir kanyarin: {date}",
+    privacyIntro:
+      "BasaChat komitmen ngajagi privasi ragané. Kabijakan puniki nerangang sapunapi tiang ngumpulang, nganggo, lan ngajagi data ragané manut UU PDP Indonésia.",
+    privacyDataCollectionTitle: "Data sané Kakumpulang",
+    privacyDataCollectionContent:
+      "Tiang ngumpulang: riwayat omongan ragané sareng BasaChat, préferénsi basa, lan data téknis.",
+    privacyDataUsageTitle: "Panggunaan Data",
+    privacyDataUsageContent:
+      "Data omongan kaanggo anggen: nyediaang layanan AI, ningkatang kualitas jawaban, lan yéning ragané setuju, nglatih modél AI tiang.",
+    privacyDataStorageTitle: "Panyimpenan Data",
+    privacyDataStorageContent:
+      "Data kasimpen antuk aman ring server tiang. Ragané prasida ngahapus riwayat omongan ring semengan.",
+    privacyUserRightsTitle: "Hak Ragané",
+    privacyUserRightsContent:
+      "Manut UU PDP Indonésia, ragané maduwe hak anggen: ngaksés data, ngidih penghapusan data, narik persetujuan, lan nolak pemrosesan data.",
+    privacyContactTitle: "Hubungi Tiang",
+    privacyContactContent:
+      "Anggen pitakén indik privasi, hubungi tiang ring privacy@basachat.com",
+
+    // Clear data
+    clearDataButton: "Hapus Riwayat Titiangé",
+    clearDataConfirmTitle: "Hapus Makejang Data?",
+    clearDataConfirmDescription:
+      "Puniki pacang ngahapus makejang riwayat omongan lan préferénsi ragané. Nénten prasida kabatalang.",
+    clearDataConfirmButton: "Inggih, Hapus Makejang",
+    clearDataCancelButton: "Batal",
+    clearDataSuccess: "Data ragané sampun kahapus.",
   },
   min: {
     appName: "BasaChat",
@@ -721,13 +1036,60 @@ export const translations: Record<SupportedLocale, TranslationKeys> = {
     downvotingResponse: "Mambari nilai kurang...",
     downvotedResponse: "Alah mambari nilai kurang!",
     failedToDownvote: "Gagal mambari nilai kurang.",
+
+    // Consent banner
+    consentTitle: "Salamaik Datang ka BasaChat",
+    consentDescription: "Jo malanjuikkan, awak satuju jo katantuan ko:",
+    consentStorageNotice:
+      "Kami manyimpan riwayat kecek awak untuak manyediakan layanan ko",
+    consentAiNotice:
+      "Awak sadang bakecek jo kecerdasan buatan (AI), bukan manusia",
+    consentPrivacyLink: "Baco Kabijakan Privasi",
+    consentTrainingLabel: "Tolong tingkekan BasaChat",
+    consentTrainingDescription:
+      "Izinkan kecek awak diagunoan untuak malatih jo maningkekan AI kami (opsional)",
+    consentAcceptButton: "Mulai Bakecek",
+    consentRequiredNotice:
+      "Parsetujuan diparalukan untuak manggunoan layanan ko",
+
+    // AI disclosure
+    aiDisclosure:
+      "Awak sadang bakecek jo AI. Jawaban mungkin indak salalu tapek.",
+
+    // Privacy page
+    privacyPageTitle: "Kabijakan Privasi",
+    privacyLastUpdated: "Tarakhir diperbarui: {date}",
+    privacyIntro:
+      "BasaChat komitmen malindungi privasi awak. Kabijakan ko manjolaskan baa kami mangumpuakan, manggunoan, jo malindungi data awak manut UU PDP Indonesia.",
+    privacyDataCollectionTitle: "Data nan Dikumpuakan",
+    privacyDataCollectionContent:
+      "Kami mangumpuakan: riwayat kecek awak jo BasaChat, preferensi bahaso, jo data teknis.",
+    privacyDataUsageTitle: "Panggunoan Data",
+    privacyDataUsageContent:
+      "Data kecek diagunoan untuak: manyediakan layanan AI, maningkekan kualitas jawaban, jo jikok awak satuju, malatih model AI kami.",
+    privacyDataStorageTitle: "Panyimpanan Data",
+    privacyDataStorageContent:
+      "Data disimpan jo aman di server kami. Awak dapek mahapuih riwayat kecek bilo sajo.",
+    privacyUserRightsTitle: "Hak Awak",
+    privacyUserRightsContent:
+      "Manut UU PDP Indonesia, awak punyo hak untuak: mangakses data, maminta panghapusan data, manarik parsetujuan, jo manolak pamrosesan data.",
+    privacyContactTitle: "Hubungi Kami",
+    privacyContactContent:
+      "Untuak patanyoan tantang privasi, hubungi kami di privacy@basachat.com",
+
+    // Clear data
+    clearDataButton: "Hapuih Riwayat Denai",
+    clearDataConfirmTitle: "Hapuih Sadonyo Data?",
+    clearDataConfirmDescription:
+      "Ko ka mahapuih sadonyo riwayat kecek jo preferensi awak. Indak dapek dibatakan.",
+    clearDataConfirmButton: "Yo, Hapuih Sadonyo",
+    clearDataCancelButton: "Batal",
+    clearDataSuccess: "Data awak alah tahapuih.",
   },
 };
 
-// Default locale
 export const defaultLocale: SupportedLocale = "id";
 
-// Get translation for a key
 export function t(
   key: keyof TranslationKeys,
   locale: SupportedLocale = defaultLocale
@@ -735,14 +1097,12 @@ export function t(
   return translations[locale]?.[key] ?? translations[defaultLocale][key];
 }
 
-// Hook-friendly getter (for use in components)
 export function getTranslations(
   locale: SupportedLocale = defaultLocale
 ): TranslationKeys {
   return translations[locale] ?? translations[defaultLocale];
 }
 
-// Maps language codes to locales for translator
 const languageToLocale: Record<string, SupportedLocale> = {
   auto: "id",
   indonesian: "id",
@@ -758,7 +1118,7 @@ const languageToLocale: Record<string, SupportedLocale> = {
  * Creates a translator function for the given language preference
  * Compatible with the existing createTranslator API
  */
-export function createTranslator(languagePreference: string = "auto") {
+export function createTranslator(languagePreference = "auto") {
   const locale = languageToLocale[languagePreference] ?? "id";
   const trans = translations[locale] ?? translations.id;
 
@@ -768,7 +1128,6 @@ export function createTranslator(languagePreference: string = "auto") {
   ): string {
     let text = trans[key] ?? translations.id[key] ?? key;
 
-    // Replace {param} placeholders with values
     if (params) {
       for (const [paramKey, paramValue] of Object.entries(params)) {
         text = text.replace(new RegExp(`\\{${paramKey}\\}`, "g"), paramValue);
@@ -783,10 +1142,7 @@ export function createTranslator(languagePreference: string = "auto") {
  * Resolves a language preference string to a normalized language name
  * Used for suggested actions and other language-specific content
  */
-export function getResolvedLanguage(
-  languagePreference: string = "auto"
-): string {
-  // Handle auto and empty cases
+export function getResolvedLanguage(languagePreference = "auto"): string {
   if (!languagePreference || languagePreference === "auto") {
     return "indonesian";
   }

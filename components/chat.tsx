@@ -26,6 +26,7 @@ import { LocaleProvider } from "@/lib/locale-context";
 import type { Attachment, ChatMessage, Vote } from "@/lib/types";
 import type { AppUsage } from "@/lib/usage";
 import { fetcher, fetchWithErrorHandlers, generateUUID } from "@/lib/utils";
+import { AiDisclosure } from "./ai-disclosure";
 import { Artifact } from "./artifact";
 import { useDataStream } from "./data-stream-provider";
 import { Messages } from "./messages";
@@ -88,8 +89,6 @@ export function Chat({
       api: "/api/chat",
       fetch: fetchWithErrorHandlers,
       prepareSendMessagesRequest(request) {
-        // Extract webSearch and newsSearch from the last message's data
-        // In AI SDK v5, data may exist at runtime but not in types
         const lastMessage = request.messages.at(-1) as
           | (ChatMessage & {
               data?: {
@@ -104,10 +103,9 @@ export function Chat({
         const languagePreference =
           lastMessage?.data?.languagePreference ?? "auto";
 
-        // AI SDK v5: Send all messages for stateless operation
         return {
           body: {
-            messages: request.messages, // Send all messages, not just last one
+            messages: request.messages,
             selectedChatModel: currentModelIdRef.current,
             webSearchEnabled,
             newsSearchEnabled,
@@ -132,7 +130,6 @@ export function Chat({
     },
     onError: (error) => {
       if (error instanceof ChatSDKError) {
-        // Check if it's a credit card error
         if (
           error.message?.includes("AI Gateway requires a valid credit card")
         ) {
@@ -172,7 +169,6 @@ export function Chat({
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const isArtifactVisible = useArtifactSelector((state) => state.isVisible);
 
-  // Get current language preference from the last user message or URL param
   const currentLanguagePreference = useMemo(() => {
     const lastUserMessage = [...messages]
       .reverse()
@@ -208,7 +204,7 @@ export function Chat({
           votes={votes}
         />
 
-        <div className="sticky bottom-0 z-1 mx-auto flex w-full max-w-4xl gap-2 border-t-0 bg-background px-2 pb-3 md:px-4 md:pb-4">
+        <div className="sticky bottom-0 z-1 mx-auto flex w-full max-w-4xl flex-col gap-0 border-t-0 bg-background px-2 pb-3 md:px-4 md:pb-4">
           {!isReadonly && (
             <MultimodalInput
               attachments={attachments}
@@ -227,6 +223,7 @@ export function Chat({
               stop={stop}
             />
           )}
+          <AiDisclosure />
         </div>
       </div>
 

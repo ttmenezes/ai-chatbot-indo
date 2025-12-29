@@ -96,11 +96,7 @@ export function sanitizeText(text: string) {
   return text.replace('<has_function_call>', '');
 }
 
-// Stateless: This function is kept for compatibility but not used in stateless mode
-// Clients send UIMessage[] directly, no database conversion needed
 export function convertToUIMessages(_messages: never[]): ChatMessage[] {
-  // Stateless: No database messages to convert
-  // Clients manage messages client-side
   return [];
 }
 

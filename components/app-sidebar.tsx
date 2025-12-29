@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 // biome-ignore lint/performance/noNamespaceImport: will use this import
 import * as React from "react";
+import { ClearDataButton } from "@/components/clear-data-button";
 import { RestartIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,13 +59,11 @@ export function AppSidebar({ locale = "id" }: AppSidebarProps) {
       setFeedback("");
       setEmail("");
 
-      // Reset submitted state after a delay
       setTimeout(() => {
         setIsSubmitted(false);
       }, 2000);
     } catch (error) {
       console.error("Error submitting feedback:", error);
-      // Still show success to user, but log error
       setIsSubmitted(true);
       setFeedback("");
       setEmail("");
@@ -116,7 +115,6 @@ export function AppSidebar({ locale = "id" }: AppSidebarProps) {
               </div>
             </div>
 
-            {/* About Section */}
             <div className="rounded-lg bg-muted/50 p-3 text-xs">
               <p className="mb-1 font-medium text-foreground">{t.aboutTitle}</p>
               <p className="text-muted-foreground leading-relaxed">
@@ -126,75 +124,76 @@ export function AppSidebar({ locale = "id" }: AppSidebarProps) {
           </div>
         </SidebarMenu>
       </SidebarHeader>
-      {/* <SidebarContent>
-        <SidebarHistory locale={locale} />
-      </SidebarContent> */}
-      <SidebarFooter>
-        {/* About Link */}
-        <Link
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
-          href={`/about/${locale}`}
-          onClick={() => setOpenMobile(false)}
-        >
-          <svg
-            fill="none"
-            height="16"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            width="16"
-            xmlns="http://www.w3.org/2000/svg"
+      <SidebarFooter className="flex flex-1 flex-col">
+        <div className="flex flex-col gap-2">
+          <Link
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
+            href={`/about/${locale}`}
+            onClick={() => setOpenMobile(false)}
           >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 16v-4" />
-            <path d="M12 8h.01" />
-          </svg>
-          {t.aboutLink}
-        </Link>
+            <svg
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4" />
+              <path d="M12 8h.01" />
+            </svg>
+            {t.aboutLink}
+          </Link>
 
-        {/* Feedback Section */}
-        <div className="rounded-lg border p-3">
-          <p className="mb-2 font-medium text-sm">{t.feedbackInputTitle}</p>
-          {isSubmitted ? (
-            <div className="py-2 text-center">
-              <p className="font-medium text-green-600 text-xs">
-                {t.feedbackThankYou}
-              </p>
-            </div>
-          ) : (
-            <>
-              <div className="space-y-2">
-                <Input
-                  className="h-8 text-xs"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setEmail(e.target.value)
-                  }
-                  placeholder={t.feedbackEmailPlaceholder}
-                  type="email"
-                  value={email}
-                />
-                <Textarea
-                  className="min-h-[80px] resize-none text-xs"
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setFeedback(e.target.value)
-                  }
-                  placeholder={t.feedbackPlaceholder}
-                  value={feedback}
-                />
+          <div className="rounded-lg border p-3">
+            <p className="mb-2 font-medium text-sm">{t.feedbackInputTitle}</p>
+            {isSubmitted ? (
+              <div className="py-2 text-center">
+                <p className="font-medium text-green-600 text-xs">
+                  {t.feedbackThankYou}
+                </p>
               </div>
-              <Button
-                className="mt-2 w-full text-xs"
-                disabled={!feedback.trim() || isSubmitting}
-                onClick={handleFeedbackSubmit}
-                size="sm"
-                type="button"
-              >
-                {isSubmitting ? t.feedbackSending : t.feedbackSubmit}
-              </Button>
-            </>
-          )}
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <Input
+                    className="h-8 text-xs"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setEmail(e.target.value)
+                    }
+                    placeholder={t.feedbackEmailPlaceholder}
+                    type="email"
+                    value={email}
+                  />
+                  <Textarea
+                    className="min-h-[80px] resize-none text-xs"
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                      setFeedback(e.target.value)
+                    }
+                    placeholder={t.feedbackPlaceholder}
+                    value={feedback}
+                  />
+                </div>
+                <Button
+                  className="mt-2 w-full text-xs"
+                  disabled={!feedback.trim() || isSubmitting}
+                  onClick={handleFeedbackSubmit}
+                  size="sm"
+                  type="button"
+                >
+                  {isSubmitting ? t.feedbackSending : t.feedbackSubmit}
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-auto border-t pt-4 pb-2">
+          <ClearDataButton />
         </div>
       </SidebarFooter>
     </Sidebar>
