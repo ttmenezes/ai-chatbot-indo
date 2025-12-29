@@ -46,16 +46,19 @@ export async function upsertChatLog({
   id,
   messages,
   locale,
+  aiTrainOptIn,
 }: {
   id: string;
   messages: ChatMessage[];
   locale?: string;
+  aiTrainOptIn?: boolean;
 }) {
   const { error } = await supabase.from("logs").upsert(
     {
       id,
       messages: messages as unknown as Record<string, unknown>,
       locale: locale || null,
+      ai_train_opt_in: aiTrainOptIn ?? false,
     },
     {
       onConflict: "id",

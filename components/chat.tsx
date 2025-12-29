@@ -20,6 +20,7 @@ import {
 import { useArtifactSelector } from "@/hooks/use-artifact";
 import { useAutoResume } from "@/hooks/use-auto-resume";
 import { useChatVisibility } from "@/hooks/use-chat-visibility";
+import { useConsent } from "@/hooks/use-consent";
 import { ChatSDKError } from "@/lib/errors";
 import type { SupportedLocale } from "@/lib/i18n";
 import { LocaleProvider } from "@/lib/locale-context";
@@ -59,6 +60,7 @@ export function Chat({
     initialVisibilityType,
   });
 
+  const { aiTrainingOptIn } = useConsent();
   const { mutate } = useSWRConfig();
   const { setDataStream } = useDataStream();
 
@@ -111,6 +113,7 @@ export function Chat({
             newsSearchEnabled,
             languagePreference,
             chatId: id,
+            aiTrainingOptIn,
             ...request.body,
           },
         };

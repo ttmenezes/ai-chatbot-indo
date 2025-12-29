@@ -114,6 +114,7 @@ export async function POST(request: Request) {
       imageGenerationEnabled,
       languagePreference,
       chatId,
+      aiTrainingOptIn,
     }: {
       messages: UIMessage[];
       selectedChatModel?: ChatModel["id"];
@@ -122,6 +123,7 @@ export async function POST(request: Request) {
       imageGenerationEnabled?: boolean;
       languagePreference?: string;
       chatId?: string;
+      aiTrainingOptIn?: boolean;
     } = json;
 
     if (!messages || !Array.isArray(messages)) {
@@ -218,6 +220,7 @@ export async function POST(request: Request) {
             id: chatId,
             messages: uiMessages,
             locale: languagePreference,
+            aiTrainOptIn: aiTrainingOptIn ?? false,
           }).catch((error) => {
             console.warn("Failed to log chat transcript:", error);
           });
