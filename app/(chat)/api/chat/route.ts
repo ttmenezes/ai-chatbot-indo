@@ -196,8 +196,6 @@ export async function POST(request: Request) {
         isEnabled: isProductionEnvironment,
         functionId: "stream-text",
       },
-      onChunk: () => {},
-      onStepFinish: () => {},
       onFinish: async ({ usage }) => {
         try {
           const providers = await getTokenlensCatalog();

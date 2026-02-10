@@ -3,7 +3,7 @@
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import type { ReactNode } from "react";
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { PostHogPageviewTracker } from "@/components/analytics/posthog-pageview-tracker";
 import { useConsent } from "@/hooks/use-consent";
 
@@ -53,7 +53,9 @@ export function PostHogClientProvider({
 
   return (
     <PostHogProvider client={posthog}>
-      <PostHogPageviewTracker />
+      <Suspense fallback={null}>
+        <PostHogPageviewTracker />
+      </Suspense>
       {children}
     </PostHogProvider>
   );

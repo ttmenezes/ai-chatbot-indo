@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 import { Chat } from "@/components/chat";
 import { DataStreamHandler } from "@/components/data-stream-handler";
 import { DEFAULT_CHAT_MODEL } from "@/lib/ai/models";
@@ -46,15 +47,17 @@ export default async function Page(props: {
   if (!chatModelFromCookie) {
     return (
       <>
-        <Chat
-          autoResume={false}
-          id={id}
-          initialChatModel={DEFAULT_CHAT_MODEL}
-          initialLocale={locale}
-          initialMessages={initialMessages}
-          initialVisibilityType="private"
-          isReadonly={false}
-        />
+        <Suspense fallback={<div className="h-dvh w-full bg-background" />}>
+          <Chat
+            autoResume={false}
+            id={id}
+            initialChatModel={DEFAULT_CHAT_MODEL}
+            initialLocale={locale}
+            initialMessages={initialMessages}
+            initialVisibilityType="private"
+            isReadonly={false}
+          />
+        </Suspense>
         <DataStreamHandler />
       </>
     );
@@ -62,15 +65,17 @@ export default async function Page(props: {
 
   return (
     <>
-      <Chat
-        autoResume={false}
-        id={id}
-        initialChatModel={chatModelFromCookie.value}
-        initialLocale={locale}
-        initialMessages={initialMessages}
-        initialVisibilityType="private"
-        isReadonly={false}
-      />
+      <Suspense fallback={<div className="h-dvh w-full bg-background" />}>
+        <Chat
+          autoResume={false}
+          id={id}
+          initialChatModel={chatModelFromCookie.value}
+          initialLocale={locale}
+          initialMessages={initialMessages}
+          initialVisibilityType="private"
+          isReadonly={false}
+        />
+      </Suspense>
       <DataStreamHandler />
     </>
   );

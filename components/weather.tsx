@@ -370,7 +370,8 @@ export function Weather({
       className={cx(
         "relative flex w-full flex-col gap-6 overflow-hidden rounded-3xl p-6 shadow-lg backdrop-blur-sm",
         {
-          "bg-gradient-to-br from-amber-400 via-orange-500 to-orange-600": isDay,
+          "bg-gradient-to-br from-amber-400 via-orange-500 to-orange-600":
+            isDay,
         },
         {
           "bg-gradient-to-br from-amber-900 via-orange-900 to-slate-900":

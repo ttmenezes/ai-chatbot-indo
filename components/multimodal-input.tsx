@@ -48,7 +48,6 @@ import {
   CpuIcon,
   GlobeIcon,
   ImageIcon,
-  PaperclipIcon,
   StopIcon,
 } from "./icons";
 import { PreviewAttachment } from "./preview-attachment";

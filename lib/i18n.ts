@@ -3,14 +3,7 @@
  * Supports Indonesian, English, and major Indonesian regional languages
  */
 
-export type SupportedLocale =
-  | "id"
-  | "en"
-  | "jv"
-  | "su"
-  | "ace"
-  | "ban"
-  | "min";
+export type SupportedLocale = "id" | "en" | "jv" | "su" | "ace" | "ban" | "min";
 
 export type TranslationKeys = {
   appName: string;

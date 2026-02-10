@@ -6,7 +6,7 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "npx ultracite@latest check",
+    "lint": "pnpm exec ultracite check",
     "format": "npx ultracite@latest fix",
     "test": "export PLAYWRIGHT=True && pnpm exec playwright test"
   },

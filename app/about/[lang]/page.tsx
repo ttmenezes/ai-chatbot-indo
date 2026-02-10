@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  getTranslations,
-  type SupportedLocale,
-} from "@/lib/i18n";
+import { getTranslations, type SupportedLocale } from "@/lib/i18n";
 
 const supportedLocales: SupportedLocale[] = [
   "id",
@@ -120,27 +117,27 @@ export default async function AboutPage({ params }: PageProps) {
     <div className="min-h-screen bg-background">
       {/* Decorative background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-primary/10 via-accent/5 to-transparent blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-accent/10 via-primary/5 to-transparent blur-3xl" />
+        <div className="-top-40 -right-40 absolute h-[600px] w-[600px] rounded-full bg-gradient-to-br from-primary/10 via-accent/5 to-transparent blur-3xl" />
+        <div className="-bottom-40 -left-40 absolute h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-accent/10 via-primary/5 to-transparent blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-3xl px-6 py-12 md:py-20">
         {/* CTA Button at top */}
         <div className="mb-12 flex justify-center">
           <Link
-            href={`/?lang=${locale}`}
             className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-accent-foreground shadow-lg transition-all hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+            href={`/?lang=${locale}`}
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
               fill="none"
+              height="20"
               stroke="currentColor"
-              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
@@ -152,16 +149,16 @@ export default async function AboutPage({ params }: PageProps) {
         <header className="mb-12 text-center">
           <div className="mb-4 inline-flex items-center justify-center rounded-2xl bg-primary/10 p-4">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="48"
-              height="48"
-              viewBox="0 0 24 24"
+              className="text-primary"
               fill="none"
+              height="48"
               stroke="currentColor"
-              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="text-primary"
+              strokeWidth="1.5"
+              viewBox="0 0 24 24"
+              width="48"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path d="M12 6V2H8" />
               <path d="m8 18-4 4V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2Z" />
@@ -171,7 +168,7 @@ export default async function AboutPage({ params }: PageProps) {
               <path d="M20 12h2" />
             </svg>
           </div>
-          <h1 className="font-bold text-4xl tracking-tight text-foreground md:text-5xl">
+          <h1 className="font-bold text-4xl text-foreground tracking-tight md:text-5xl">
             {t.aboutPageTitle}
           </h1>
         </header>
@@ -182,24 +179,28 @@ export default async function AboutPage({ params }: PageProps) {
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
+                  className="text-primary"
                   fill="none"
+                  height="20"
                   stroke="currentColor"
-                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="text-primary"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  width="20"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 16v-4" />
                   <path d="M12 8h.01" />
                 </svg>
               </div>
-              <h2 className="font-semibold text-lg text-foreground">
-                {locale === "id" ? "Visi Kami" : locale === "en" ? "Our Vision" : t.aboutTitle}
+              <h2 className="font-semibold text-foreground text-lg">
+                {locale === "id"
+                  ? "Visi Kami"
+                  : locale === "en"
+                    ? "Our Vision"
+                    : t.aboutTitle}
               </h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
@@ -211,23 +212,27 @@ export default async function AboutPage({ params }: PageProps) {
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/20">
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
+                  className="text-accent-foreground"
                   fill="none"
+                  height="20"
                   stroke="currentColor"
-                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="text-accent-foreground"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  width="20"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path d="M12 20h9" />
                   <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                 </svg>
               </div>
-              <h2 className="font-semibold text-lg text-foreground">
-                {locale === "id" ? "Bahasa Lokal" : locale === "en" ? "Local Languages" : t.aboutTitle}
+              <h2 className="font-semibold text-foreground text-lg">
+                {locale === "id"
+                  ? "Bahasa Lokal"
+                  : locale === "en"
+                    ? "Local Languages"
+                    : t.aboutTitle}
               </h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
@@ -239,22 +244,26 @@ export default async function AboutPage({ params }: PageProps) {
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-3/20">
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
+                  className="text-chart-3"
                   fill="none"
+                  height="20"
                   stroke="currentColor"
-                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="text-chart-3"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  width="20"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                 </svg>
               </div>
-              <h2 className="font-semibold text-lg text-foreground">
-                {locale === "id" ? "Masa Depan" : locale === "en" ? "The Future" : t.aboutTitle}
+              <h2 className="font-semibold text-foreground text-lg">
+                {locale === "id"
+                  ? "Masa Depan"
+                  : locale === "en"
+                    ? "The Future"
+                    : t.aboutTitle}
               </h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
@@ -268,13 +277,13 @@ export default async function AboutPage({ params }: PageProps) {
           <div className="flex flex-wrap items-center justify-center gap-2">
             {supportedLocales.map((loc) => (
               <Link
-                key={loc}
-                href={`/about/${loc}`}
                 className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
                   loc === locale
                     ? "bg-primary font-medium text-primary-foreground"
                     : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
+                href={`/about/${loc}`}
+                key={loc}
               >
                 {loc === "id"
                   ? "Indonesia"
@@ -297,4 +306,3 @@ export default async function AboutPage({ params }: PageProps) {
     </div>
   );
 }
-
