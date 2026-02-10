@@ -21,7 +21,14 @@ export function PostHogClientProvider({
     const enabled = process.env.NEXT_PUBLIC_POSTHOG_ENABLED === "true";
     const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 
-    if (!enabled || !key || initializedRef.current) {
+    // Only initialize after consent is resolved and explicitly granted.
+    if (
+      !enabled ||
+      !key ||
+      isLoading ||
+      !hasConsented ||
+      initializedRef.current
+    ) {
       return;
     }
 
@@ -36,7 +43,7 @@ export function PostHogClientProvider({
     });
 
     initializedRef.current = true;
-  }, []);
+  }, [hasConsented, isLoading]);
 
   useEffect(() => {
     if (!initializedRef.current || isLoading) {

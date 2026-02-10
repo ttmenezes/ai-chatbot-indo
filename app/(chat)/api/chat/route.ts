@@ -151,7 +151,8 @@ export async function POST(request: Request) {
       ? withTracing(baseModel, posthogServerClient, {
           posthogCaptureImmediate: true,
           posthogDistinctId: chatId,
-          posthogPrivacyMode: aiTrainingOptIn === false,
+          // Treat missing consent as private-by-default.
+          posthogPrivacyMode: aiTrainingOptIn !== true,
           posthogProperties: {
             aiTrainingOptIn: aiTrainingOptIn ?? false,
             chatId,
