@@ -1,11 +1,11 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { useEffect, useRef } from "react";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
-import { useConsent } from "@/hooks/use-consent";
+import type { ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { PostHogPageviewTracker } from "@/components/analytics/posthog-pageview-tracker";
+import { useConsent } from "@/hooks/use-consent";
 
 type PostHogClientProviderProps = {
   children: ReactNode;
@@ -26,7 +26,8 @@ export function PostHogClientProvider({
     }
 
     posthog.init(key, {
-      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://app.posthog.com",
+      api_host:
+        process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://app.posthog.com",
       autocapture: false,
       capture_pageleave: true,
       capture_pageview: false,

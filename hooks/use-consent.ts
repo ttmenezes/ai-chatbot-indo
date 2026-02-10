@@ -31,7 +31,9 @@ type StoredConsentState = Pick<
 function readStoredConsentState(): StoredConsentState {
   const storedConsent = localStorage.getItem(CONSENT_KEYS.hasConsented);
   const storedTimestamp = localStorage.getItem(CONSENT_KEYS.consentTimestamp);
-  const storedTrainingOptIn = localStorage.getItem(CONSENT_KEYS.aiTrainingOptIn);
+  const storedTrainingOptIn = localStorage.getItem(
+    CONSENT_KEYS.aiTrainingOptIn
+  );
 
   return {
     hasConsented: storedConsent === "true",

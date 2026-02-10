@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 import posthog from "posthog-js";
+import { useEffect } from "react";
 import { useConsent } from "@/hooks/use-consent";
 
 export function PostHogPageviewTracker() {
