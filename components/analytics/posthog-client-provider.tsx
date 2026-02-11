@@ -1,0 +1,69 @@
+"use client";
+
+import posthog from "posthog-js";
+import { PostHogProvider } from "posthog-js/react";
+import type { ReactNode } from "react";
+import { Suspense, useEffect, useRef } from "react";
+import { PostHogPageviewTracker } from "@/components/analytics/posthog-pageview-tracker";
+import { useConsent } from "@/hooks/use-consent";
+
+type PostHogClientProviderProps = {
+  children: ReactNode;
+};
+
+export function PostHogClientProvider({
+  children,
+}: PostHogClientProviderProps) {
+  const { hasConsented, isLoading } = useConsent();
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    const enabled = process.env.NEXT_PUBLIC_POSTHOG_ENABLED === "true";
+    const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+
+    // Only initialize after consent is resolved and explicitly granted.
+    if (
+      !enabled ||
+      !key ||
+      isLoading ||
+      !hasConsented ||
+      initializedRef.current
+    ) {
+      return;
+    }
+
+    posthog.init(key, {
+      api_host:
+        process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://app.posthog.com",
+      autocapture: false,
+      capture_pageleave: true,
+      capture_pageview: false,
+      person_profiles: "identified_only",
+      persistence: "localStorage",
+    });
+
+    initializedRef.current = true;
+  }, [hasConsented, isLoading]);
+
+  useEffect(() => {
+    if (!initializedRef.current || isLoading) {
+      return;
+    }
+
+    if (hasConsented) {
+      posthog.opt_in_capturing();
+      return;
+    }
+
+    posthog.opt_out_capturing();
+  }, [hasConsented, isLoading]);
+
+  return (
+    <PostHogProvider client={posthog}>
+      <Suspense fallback={null}>
+        <PostHogPageviewTracker />
+      </Suspense>
+      {children}
+    </PostHogProvider>
+  );
+}

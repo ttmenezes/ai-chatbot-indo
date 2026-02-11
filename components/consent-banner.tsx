@@ -22,7 +22,11 @@ type ConsentBannerProps = {
 export function ConsentBanner({ locale = "id" }: ConsentBannerProps) {
   const t = getTranslations(locale);
   const { hasConsented, isLoading, acceptConsent } = useConsent();
-  const [aiTrainingOptIn, setAiTrainingOptIn] = useState(false);
+  const [aiTrainingOptIn, setAiTrainingOptIn] = useState(true);
+  const trackingDisclosure =
+    locale === "id"
+      ? "Kami menggunakan cookie dan analitik penggunaan untuk memahami aktivitas pengguna dan meningkatkan fitur."
+      : "We use cookies and usage analytics to understand user activity and improve product features.";
 
   if (isLoading) {
     return null;
@@ -114,11 +118,16 @@ export function ConsentBanner({ locale = "id" }: ConsentBannerProps) {
             <Link
               className="text-primary text-sm underline-offset-4 hover:underline"
               href="/privacy"
+              rel="noopener noreferrer"
               target="_blank"
             >
               {t.consentPrivacyLink}
             </Link>
           </div>
+
+          <p className="text-center text-muted-foreground text-xs">
+            {trackingDisclosure}
+          </p>
 
           <div className="rounded-lg border border-border/50 p-3">
             <div className="flex cursor-pointer items-start gap-3">

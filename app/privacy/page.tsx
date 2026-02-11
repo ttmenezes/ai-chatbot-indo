@@ -28,6 +28,10 @@ export default async function PrivacyPage({ searchParams }: PageProps) {
   const resolved = await searchParams;
   const locale = getLocaleFromSearchParams(resolved.lang);
   const t = getTranslations(locale);
+  const trackingNotice =
+    locale === "id"
+      ? "Kami juga menggunakan cookie dan analitik penggunaan (PostHog) untuk memahami aktivitas pengguna, mengukur penggunaan fitur, dan meningkatkan layanan."
+      : "We also use cookies and usage analytics (PostHog) to understand user activity, measure feature usage, and improve the service.";
 
   // Format the last updated date
   const lastUpdatedDate = new Date("2025-01-01").toLocaleDateString(
@@ -134,6 +138,9 @@ export default async function PrivacyPage({ searchParams }: PageProps) {
             </div>
             <p className="text-muted-foreground leading-relaxed">
               {t.privacyDataCollectionContent}
+            </p>
+            <p className="mt-3 text-muted-foreground leading-relaxed">
+              {trackingNotice}
             </p>
           </article>
 

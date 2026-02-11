@@ -132,7 +132,11 @@ export const ReasoningTrigger = memo(
             {isStreaming || duration === 0 ? (
               <p>{translator("reasoningThinking")}</p>
             ) : (
-              <p>{translator("reasoningThoughtFor", { duration: String(duration) })}</p>
+              <p>
+                {translator("reasoningThoughtFor", {
+                  duration: String(duration),
+                })}
+              </p>
             )}
             <ChevronDownIcon
               className={cn(

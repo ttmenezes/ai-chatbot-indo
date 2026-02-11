@@ -1,4 +1,4 @@
-import { type SupportedLocale, getTranslations } from "@/lib/i18n";
+import { getTranslations, type SupportedLocale } from "@/lib/i18n";
 
 export const DEFAULT_CHAT_MODEL: string = "chat-model";
 

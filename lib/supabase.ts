@@ -1,28 +1,30 @@
 import { createClient } from "@supabase/supabase-js";
 import type { ChatMessage } from "./types";
 
-const supabaseUrl =
-  process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabasePublishableKey =
-  process.env.SUPABASE_PUBLISHABLE_KEY ||
-  process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
-  process.env.SUPABASE_ANON_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+function getSupabaseClient() {
+  const supabaseUrl =
+    process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabasePublishableKey =
+    process.env.SUPABASE_PUBLISHABLE_KEY ||
+    process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabasePublishableKey) {
-  throw new Error(
-    "Missing Supabase environment variables: SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_PUBLISHABLE_KEY/SUPABASE_PUBLISHABLE_DEFAULT_KEY (or SUPABASE_ANON_KEY) must be set"
-  );
+  if (!supabaseUrl || !supabasePublishableKey) {
+    throw new Error(
+      "Missing Supabase environment variables: SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_PUBLISHABLE_KEY/SUPABASE_PUBLISHABLE_DEFAULT_KEY (or SUPABASE_ANON_KEY) must be set"
+    );
+  }
+
+  return createClient(supabaseUrl, supabasePublishableKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
 }
-
-const supabase = createClient(supabaseUrl, supabasePublishableKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-  },
-});
 
 export async function saveFeedback({
   email,
@@ -31,6 +33,8 @@ export async function saveFeedback({
   email?: string;
   feedbackText: string;
 }) {
+  const supabase = getSupabaseClient();
+
   const { error } = await supabase.from("feedback").insert({
     email: email || null,
     feedback_text: feedbackText,
@@ -53,6 +57,8 @@ export async function upsertChatLog({
   locale?: string;
   aiTrainOptIn?: boolean;
 }) {
+  const supabase = getSupabaseClient();
+
   const { error } = await supabase.from("logs").upsert(
     {
       id,
@@ -72,6 +78,8 @@ export async function upsertChatLog({
 }
 
 export async function deleteChatLogById(id: string) {
+  const supabase = getSupabaseClient();
+
   const { error } = await supabase.from("logs").delete().eq("id", id);
 
   if (error) {

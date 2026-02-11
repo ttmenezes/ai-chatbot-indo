@@ -1,12 +1,12 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, type ReactNode, useContext } from "react";
 import {
-  type SupportedLocale,
-  type TranslationKeys,
+  createTranslator,
   defaultLocale,
   getTranslations,
-  createTranslator,
+  type SupportedLocale,
+  type TranslationKeys,
 } from "./i18n";
 
 type LocaleContextValue = {
@@ -64,4 +64,3 @@ export function useLocale(): LocaleContextValue {
   }
   return context;
 }
-

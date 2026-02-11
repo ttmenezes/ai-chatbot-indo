@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, startTransition, useActionState, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Suspense, useActionState, useEffect, useState } from "react";
 import { AuthForm } from "@/components/auth-form";
 import { SubmitButton } from "@/components/submit-button";
 import { toast } from "@/components/toast";
@@ -92,7 +92,13 @@ function RegisterContent() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<div className="flex h-dvh w-screen items-center justify-center">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex h-dvh w-screen items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
       <RegisterContent />
     </Suspense>
   );

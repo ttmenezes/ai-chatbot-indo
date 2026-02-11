@@ -1,4 +1,5 @@
 import { google } from "@ai-sdk/google";
+import { withTracing } from "@posthog/ai/vercel";
 import { geolocation } from "@vercel/functions";
 import {
   convertToModelMessages,
@@ -17,6 +18,7 @@ import { generateImageTool } from "@/lib/ai/tools/generate-image";
 import { getWeather } from "@/lib/ai/tools/get-weather";
 import { isProductionEnvironment } from "@/lib/constants";
 import { ChatSDKError } from "@/lib/errors";
+import { getPostHogServerClient } from "@/lib/posthog-server";
 import { upsertChatLog } from "@/lib/supabase";
 import type { ChatMessage } from "@/lib/types";
 
@@ -142,7 +144,26 @@ export async function POST(request: Request) {
       country,
     };
 
-    const model = myProvider.languageModel(modelId);
+    const baseModel = myProvider.languageModel(modelId);
+    const posthogServerClient = getPostHogServerClient();
+
+    const model = posthogServerClient
+      ? withTracing(baseModel, posthogServerClient, {
+          posthogCaptureImmediate: true,
+          posthogDistinctId: chatId,
+          // Treat missing consent as private-by-default.
+          posthogPrivacyMode: aiTrainingOptIn !== true,
+          posthogProperties: {
+            aiTrainingOptIn: aiTrainingOptIn ?? false,
+            chatId,
+            imageGenerationEnabled: imageGenerationEnabled ?? false,
+            languagePreference: languagePreference ?? "auto",
+            newsSearchEnabled: newsSearchEnabled ?? false,
+            selectedChatModel: modelId,
+            webSearchEnabled: webSearchEnabled ?? false,
+          },
+        })
+      : baseModel;
 
     const lastMessage = uiMessages.at(-1);
     const userMessageText = lastMessage
@@ -196,8 +217,6 @@ export async function POST(request: Request) {
         isEnabled: isProductionEnvironment,
         functionId: "stream-text",
       },
-      onChunk: () => {},
-      onStepFinish: () => {},
       onFinish: async ({ usage }) => {
         try {
           const providers = await getTokenlensCatalog();
